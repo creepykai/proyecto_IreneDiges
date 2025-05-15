@@ -46,7 +46,7 @@ class Libro:
                     solo_digitos = False
                 caracter += 1
             if not solo_digitos:
-                mensaje_error = "El ISBN no puede estar vacio"
+                mensaje_error = "El ISBN solo puede contener números."
                 es_valido = False
 
         if not es_valido:
@@ -111,6 +111,41 @@ class Libro:
 
         return es_valido
 
+    def validar_curso(self) -> bool:
+        es_valido: bool = True
+        mensaje_error: str = ""
+        curso_sin_espacios: str = ""
+
+        curso_sin_espacios = self.curso.replace(" ", "")
+
+        if self.curso.strip() == "":
+            mensaje_error = "El curso no puede estar vacío."
+            es_valido = False
+        elif not self.contiene_letras(curso_sin_espacios):
+            mensaje_error = "El curso debe contener al menos una letra."
+            es_valido = False
+
+        if not es_valido:
+            print(f"Error: {mensaje_error}")
+
+        return es_valido
+
+
+    def validar_datos_libro(self) -> bool:
+        es_valido: bool = True
+
+        if not self.validar_isbn():
+            es_valido = False
+        if not self.validar_titulo():
+            es_valido = False
+        if not self.validar_editorial():
+            es_valido = False
+        if not self.validar_materia():
+            es_valido = False
+        if not self.validar_curso():
+            es_valido = False
+
+        return es_valido
 
     def __str__(self):
         return f"ISBN: {self.isbn} Título: {self.titulo} Editorial: {self.editorial} Materia: {self.materia} Curso: {self.curso}"
