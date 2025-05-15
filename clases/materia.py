@@ -14,14 +14,14 @@ class Materia:
 
         return contiene
 
-    def validar_nombre(self) -> bool:
+    def validar_materia(self) -> bool:
         es_valido: bool = True
         mensaje_error: str = ""
 
-        if self.nombre.strip() == "":
+        if self.materia.strip() == "":
             mensaje_error = "El nombre de la materia no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(self.nombre.strip()):
+        elif not self.contiene_letras(self.materia.strip()):
             mensaje_error = "El nombre de la materia debe contener al menos una letra."
             es_valido = False
 
@@ -47,7 +47,7 @@ class Materia:
     def validar_datos_materia(self) -> bool:
         es_valido: bool = True
 
-        if not self.validar_nombre():
+        if not self.validar_materia():
             es_valido = False
         if not self.validar_departamento():
             es_valido = False
@@ -56,4 +56,3 @@ class Materia:
 
     def __str__(self) -> str:
         return f"Materia: {self.materia} Departamento: {self.departamento}"
-
