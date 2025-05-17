@@ -19,8 +19,8 @@ def crear_prestamo() -> Prestamo:
 
     fecha_entrega: str = ""
     estado: str = ""
+    fecha_devolucion: str = ""
 
-    # Datos del alumno
     nie = input("Introduce el NIE del alumno: ").strip().upper()
     nombre = input("Introduce el nombre del alumno: ").strip()
     apellidos = input("Introduce los apellidos del alumno: ").strip()
@@ -30,21 +30,23 @@ def crear_prestamo() -> Prestamo:
 
     alumno = Alumno(nie, nombre, apellidos, tramo, bilingue)
 
-    # Datos del libro
     isbn = input("Introduce el ISBN del libro: ").strip()
     titulo = input("Introduce el título del libro: ").strip()
     editorial = input("Introduce la editorial: ").strip()
     materia = input("Introduce la materia: ").strip()
-    curso_nombre = input("Introduce el curso: ").strip()
+    curso_nombre = input("Introduce el curso del libro: ").strip()
 
     libro = Libro(isbn, titulo, editorial, materia, curso_nombre)
 
+    curso = Curso(curso_nombre, "")
 
-    curso = curso_nombre
     fecha_entrega = input("Introduce la fecha de entrega (AAAA-MM-DD): ").strip()
     estado = input("Introduce el estado del préstamo (P = Prestado, D = Devuelto): ").strip().upper()
 
-    prestamo = Prestamo(alumno, libro, curso, fecha_entrega, estado)
+    if estado == "D":
+        fecha_devolucion = input("Introduce la fecha de devolución (AAAA-MM-DD): ").strip()
+
+    prestamo = Prestamo(alumno, libro, curso, fecha_entrega, estado, fecha_devolucion)
 
     if prestamo.validar_datos_prestamo():
         print("El préstamo se ha creado correctamente.")
@@ -53,12 +55,13 @@ def crear_prestamo() -> Prestamo:
         print("No se ha podido crear el préstamo.")
         return None
 
+
 def modificar_prestamo(prestamo: Prestamo) -> None:
     nuevo_curso: str = ""
     nueva_fecha_devolucion: str = ""
     nuevo_estado: str = ""
 
-    curso_final: str = prestamo.curso
+    curso_final: Curso = prestamo.curso
     fecha_devolucion_final: str = prestamo.fecha_devolucion
     estado_final: str = prestamo.estado
 
@@ -67,7 +70,7 @@ def modificar_prestamo(prestamo: Prestamo) -> None:
     nuevo_estado = input("Introduce el estado (P = Prestado, D = Devuelto) / Dejar vacío si no se quiere modificar: ").strip().upper()
 
     if nuevo_curso != "":
-        curso_final = nuevo_curso
+        curso_final = Curso(nuevo_curso, "")
     if nueva_fecha_devolucion != "":
         fecha_devolucion_final = nueva_fecha_devolucion
     if nuevo_estado in ["P", "D"]:
