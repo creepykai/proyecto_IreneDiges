@@ -56,11 +56,13 @@ def modificar_alumno(alumno: Alumno) -> None:
     nuevo_apellido: str = ""
     nuevo_tramo: str = ""
     nuevo_str_bilingue: str = ""
-    nombre_final: str = ""
-    apellidos_final: str = ""
-    tramo_final: str = ""
-    nuevo_bilingue: bool = alumno.bilingue  # valor actual
+
+    nombre_final: str = alumno.nombre
+    apellidos_final: str = alumno.apellidos
+    tramo_final: str = alumno.tramo
     bilingue_final: bool = alumno.bilingue
+    bilingue_int: int = 0
+
 
     nuevo_nombre = input("Ingrese el nuevo nombre del alumno / Dejar vacío si no se quiere modificar: ").strip()
     nuevo_apellido = input("Ingrese el nuevo apellido del alumno / Dejar vacío si no se quiere modificar: ").strip()
@@ -82,6 +84,25 @@ def modificar_alumno(alumno: Alumno) -> None:
 
     if alumno_temporal.validacion_datos_alumno():
         alumno.modificar_datos(nombre_final, apellidos_final, tramo_final, bilingue_final)
-        print("El alumno se ha modificado correctamente.")
+
+        bilingue_int = 1 if bilingue_final else 0
+
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+
+        mod_alumno = ( "UPDATE alumnos SET nombre = '" + nombre_final +
+            "', apellido = '" + apellidos_final +
+            "', tramo = '" + tramo_final +
+            "', bilingue = " + str(bilingue_int) +
+            " WHERE nie = '" + alumno.nie + "'")
+
+        try:
+            conexion_bd.ejecutar_consulta(mod_alumno)
+            print("El alumno se ha modificado correctamente.")
+
+        except:
+            print("Error al modificar el alumno en la base de datos.")
+        conexion_bd.cerrar()
+
     else:
         print("No se han guardado los cambios porque los datos no son válidos.")
