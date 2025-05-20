@@ -1,10 +1,72 @@
 class Alumno:
     def __init__(self, nie : str, nombre : str, apellidos : str, tramo : str, bilingue : bool):
-        self.nie = nie
-        self.nombre = nombre
-        self.apellidos = apellidos
-        self.tramo = tramo
-        self.bilingue = bilingue
+        self._nie = nie
+        self._nombre = nombre
+        self._apellidos = apellidos
+        self._tramo = tramo
+        self._bilingue = bilingue
+
+    @property
+    def nie(self) -> str:
+        return self._nie
+
+    @property
+    def nombre(self) -> str:
+        return self._nombre
+
+    @nombre.setter
+    def nombre(self, valor : str):
+        if valor.strip() == "" or Alumno.contiene_numeros(valor.replace(" ", "")):
+            raise ValueError("El nombre no puede estar vacío ni contener números")
+        self._nombre = valor
+
+    @property
+    def apellidos(self) -> str:
+        return self._apellidos
+
+    @apellidos.setter
+    def apellidos(self, valor : str) -> None:
+        if valor.strip() == "":
+            raise ValueError("Los apellidos no pueden estar vacios.")
+        self._apellidos = valor
+
+    @nie.setter
+    def nie(self, valor: str) -> None:
+        valor = valor.strip().upper()
+
+        if len(valor) != 9:
+            raise ValueError("El NIE debe tener 9 caracteres (8 números y 1 letra).")
+
+        numeros = valor[:8]
+        letra = valor[8]
+
+        if not numeros.isdigit():
+            raise ValueError("Los primeros 8 caracteres del NIE deben ser números.")
+        if not letra.isalpha():
+            raise ValueError("El último carácter del NIE debe ser una letra.")
+
+        self._nie = valor
+
+    @property
+    def tramo(self) -> str:
+        return self._tramo
+
+    @tramo.setter
+    def tramo(self, valor: str) -> None:
+        valor = valor.strip().upper()
+        if valor not in ["0", "I", "II"]:
+            raise ValueError("El tramo debe ser 0, I o II.")
+        self._tramo = valor
+
+    @property
+    def bilingue(self) -> bool:
+        return self._bilingue
+
+    @bilingue.setter
+    def bilingue(self, valor: bool) -> None:
+        if type(valor) is not bool:
+            raise ValueError("El campo bilingüe debe ser Verdadero o Falso (bool).")
+        self._bilingue = valor
 
     def modificar_datos(self, nombre = None, apellidos = None, tramo = None, bilingue = None) -> None:
         if nombre is not None:
@@ -130,17 +192,6 @@ class Alumno:
 
         return es_valido
 
-    @staticmethod
-    def contiene_numeros(texto : str) -> bool:
-        contiene: bool = False
-        n_caracter: int = 0
-
-        while n_caracter < len(texto):
-            if texto[n_caracter] in "0123456789":
-                contiene = True
-            n_caracter += 1
-
-        return contiene
 
     def __str__(self):
         bilingue_str = ""
