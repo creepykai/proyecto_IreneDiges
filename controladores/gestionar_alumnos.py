@@ -1,7 +1,7 @@
 from clases.alumno import Alumno
 from conexion_bd import ConexionBD
 
-class GestionarAlumnos():
+class GestionarAlumnos:
     def crear_alumno(self) -> Alumno:
         nie : str = ""
         nombre : str = ""
