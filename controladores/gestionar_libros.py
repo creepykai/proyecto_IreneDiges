@@ -1,7 +1,7 @@
 from clases.libro import Libro
 from conexion_bd import ConexionBD
 
-class Gestionar_libro:
+class GestionarLibro:
     def crear_libro(self) -> Libro:
         isbn: str = ""
         titulo: str = ""
