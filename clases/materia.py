@@ -3,18 +3,6 @@ class Materia:
         self.materia = materia
         self.departamento = departamento
 
-    @staticmethod
-    def contiene_letras(texto: str) -> bool:
-        contiene: bool = False
-        caracter: int = 0
-
-        while caracter < len(texto) and not contiene:
-            if texto[caracter] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
-                contiene = True
-            caracter += 1
-
-        return contiene
-
     def validar_materia(self) -> bool:
         es_valido: bool = True
         mensaje_error: str = ""
