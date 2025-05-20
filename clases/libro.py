@@ -1,14 +1,20 @@
 class Libro:
-    def __init__(self, isbn : str, titulo : str, editorial : str, materia : str, curso : str):
+    def __init__(self, isbn : str, titulo : str, autor : str, ejemplares : str, editorial : str, materia : str, curso : str):
         self.isbn = isbn
         self.titulo = titulo
+        self.autor = autor
+        self.ejemplares = ejemplares
         self.editorial = editorial
         self.materia = materia
         self.curso = curso
 
-    def modificar_datos(self, titulo = None, editorial = None, materia = None, curso = None) -> None:
+    def modificar_datos(self, titulo = None, autor = None, ejemplares = None, editorial = None, materia = None, curso = None) -> None:
         if titulo is not None:
             self.titulo = titulo
+        if autor is not None:
+            self.autor = autor
+        if ejemplares is not None:
+            self.ejemplares = ejemplares
         if editorial is not None:
             self.editorial = editorial
         if materia is not None:
@@ -130,6 +136,43 @@ class Libro:
 
         return es_valido
 
+    def validar_autor(self) -> bool:
+        es_valido: bool = True
+        mensaje_error: str = ""
+        autor_sin_espacios: str = ""
+
+        autor_sin_espacios = self.autor.replace(" ", "")
+
+        if self.autor.strip() == "":
+            mensaje_error = "El autor no puede estar vacío."
+            es_valido = False
+        elif not self.contiene_letras(autor_sin_espacios):
+            mensaje_error = "Los datos del autor son incorrectos."
+            es_valido = False
+
+        if not es_valido:
+            print(f"Error: {mensaje_error}")
+
+        return es_valido
+
+    def validar_ejemplares(self) -> bool:
+        es_valido: bool = True
+        mensaje_error: str = ""
+        ejemplares_sin_espacios = ""
+        ejemplares_sin_espacios = self.ejemplares.replace(" ", "")
+
+        if self.ejemplares.strip() == "":
+            mensaje_error = "Los ejemplares no pueden estar vacios"
+            es_valido = False
+        elif self.contiene_letras(ejemplares_sin_espacios):
+            mensaje_error = "Los ejemplares no pueden estar vacios"
+            es_valido = False
+
+        if not es_valido:
+            print(f"Error: {mensaje_error}")
+
+        return es_valido
+
 
     def validar_datos_libro(self) -> bool:
         es_valido: bool = True
@@ -137,6 +180,10 @@ class Libro:
         if not self.validar_isbn():
             es_valido = False
         if not self.validar_titulo():
+            es_valido = False
+        if not self.validar_autor():
+            es_valido = False
+        if not self.validar_ejemplares():
             es_valido = False
         if not self.validar_editorial():
             es_valido = False

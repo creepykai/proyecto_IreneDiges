@@ -1,4 +1,6 @@
 from clases.libro import Libro
+from conexion_bd import ConexionBD
+
 
 def crear_libro() -> Libro:
     isbn: str = ""
@@ -16,10 +18,18 @@ def crear_libro() -> Libro:
     libro: Libro = Libro(isbn, titulo, editorial, materia, curso)
 
     if libro.validar_datos_libro():
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+
+        add_libro = ("INSERT INTO libros (isbn, titulo, editorial, materia, curso) " ""
+                     "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" +
+            libro.editorial + "', '" + libro.materia + "', " + libro.curso + ")")
+
+
         print("El libro se ha creado correctamente.")
         return libro
     else:
-        print("o se ha podido crear el libro. Revisa los datos introducidos.")
+        print("No se ha podido crear el libro. Revisa los datos introducidos.")
         return None
 
 
