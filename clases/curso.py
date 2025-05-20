@@ -3,17 +3,6 @@ class Curso:
         self.curso = curso
         self.nivel = nivel
 
-    def contiene_letras(self, texto: str) -> bool:
-        contiene: bool = False
-        caracter: int = 0
-
-        while caracter < len(texto) and not contiene:
-            if texto[caracter] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
-                contiene = True
-            caracter += 1
-
-        return contiene
-
     def validar_curso(self) -> bool:
         es_valido: bool = True
         mensaje_error: str = ""
@@ -21,7 +10,7 @@ class Curso:
         if self.curso.strip() == "":
             mensaje_error = "El campo 'curso' no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(self.curso.strip()):
+        elif not Curso.contiene_letras(self.curso.strip()):
             mensaje_error = "El campo 'curso' debe contener al menos una letra."
             es_valido = False
 
@@ -37,7 +26,7 @@ class Curso:
         if self.nivel.strip() == "":
             mensaje_error = "El campo 'nivel' no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(self.nivel.strip()):
+        elif not Curso.contiene_letras(self.nivel.strip()):
             mensaje_error = "El campo 'nivel' debe contener al menos una letra."
             es_valido = False
 
@@ -55,6 +44,19 @@ class Curso:
             es_valido = False
 
         return es_valido
+
+    @staticmethod
+    def contiene_letras(texto: str) -> bool:
+        contiene: bool = False
+        caracter: int = 0
+
+        while caracter < len(texto) and not contiene:
+            if texto[caracter] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+                contiene = True
+            caracter += 1
+
+        return contiene
+
 
     def __str__(self) -> str:
         return f"Curso: {self.curso}, Nivel: {self.nivel}"

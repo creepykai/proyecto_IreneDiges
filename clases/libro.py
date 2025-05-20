@@ -22,17 +22,6 @@ class Libro:
         if curso is not None:
             self.curso = curso
 
-    def contiene_letras(self, texto: str) -> bool:
-        contiene: bool = False
-        i: int = 0
-
-        while i < len(texto) and not contiene:
-            if texto[i] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
-                contiene = True
-            i += 1
-
-        return contiene
-
     def validar_isbn(self) -> bool:
         es_valido : bool = True
         mensaje_error : str = ""
@@ -70,7 +59,7 @@ class Libro:
         if self.titulo.strip() == "":
             mensaje_error = "El título no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(titulo_sin_espacios):
+        elif not Libro.contiene_letras(titulo_sin_espacios):
             mensaje_error = "El título debe contener al menos una letra."
             es_valido = False
 
@@ -89,7 +78,7 @@ class Libro:
         if self.editorial.strip() == "":
             mensaje_error = "La editorial no puede estar vacía."
             es_valido = False
-        elif not self.contiene_letras(editorial_sin_espacios):
+        elif not Libro.contiene_letras(editorial_sin_espacios):
             mensaje_error = "La editorial debe contener al menos una letra."
             es_valido = False
 
@@ -108,7 +97,7 @@ class Libro:
         if self.materia.strip() == "":
             mensaje_error = "La materia no puede estar vacía."
             es_valido = False
-        elif not self.contiene_letras(materia_sin_espacios):
+        elif not Libro.contiene_letras(materia_sin_espacios):
             mensaje_error = "La materia debe contener al menos una letra."
             es_valido = False
 
@@ -127,7 +116,7 @@ class Libro:
         if self.curso.strip() == "":
             mensaje_error = "El curso no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(curso_sin_espacios):
+        elif not Libro.contiene_letras(curso_sin_espacios):
             mensaje_error = "El curso debe contener al menos una letra."
             es_valido = False
 
@@ -146,7 +135,7 @@ class Libro:
         if self.autor.strip() == "":
             mensaje_error = "El autor no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(autor_sin_espacios):
+        elif not Libro.contiene_letras(autor_sin_espacios):
             mensaje_error = "Los datos del autor son incorrectos."
             es_valido = False
 
@@ -164,7 +153,7 @@ class Libro:
         if self.ejemplares.strip() == "":
             mensaje_error = "Los ejemplares no pueden estar vacios"
             es_valido = False
-        elif self.contiene_letras(ejemplares_sin_espacios):
+        elif Libro.contiene_letras(ejemplares_sin_espacios):
             mensaje_error = "Los ejemplares no pueden estar vacios"
             es_valido = False
 
@@ -193,6 +182,18 @@ class Libro:
             es_valido = False
 
         return es_valido
+
+    @staticmethod
+    def contiene_letras(texto: str) -> bool:
+        contiene: bool = False
+        i: int = 0
+
+        while i < len(texto) and not contiene:
+            if texto[i] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+                contiene = True
+            i += 1
+
+        return contiene
 
     def __str__(self):
         return f"ISBN: {self.isbn} Título: {self.titulo} Editorial: {self.editorial} Materia: {self.materia} Curso: {self.curso}"
