@@ -32,7 +32,23 @@ class Prestamo:
 
         return es_valido
 
-    def validar_fecha(self, fecha: str, campo: str) -> bool:
+    def validar_datos_prestamo(self) -> bool:
+        es_valido: bool = True
+
+        if not self.validar_estado():
+            es_valido = False
+
+        if not Prestamo.validar_fecha(self.fecha_entrega, "fecha de entrega"):
+            es_valido = False
+
+        if self.fecha_devolucion.strip() != "":
+            if not Prestamo.validar_fecha(self.fecha_devolucion, "fecha de devolución"):
+                es_valido = False
+
+        return es_valido
+
+    @staticmethod
+    def validar_fecha(fecha: str, campo: str) -> bool:
         es_valido: bool = True
         mensaje_error: str = ""
 
@@ -47,21 +63,6 @@ class Prestamo:
 
         if not es_valido:
             print(f"Error: {mensaje_error}")
-
-        return es_valido
-
-    def validar_datos_prestamo(self) -> bool:
-        es_valido: bool = True
-
-        if not self.validar_estado():
-            es_valido = False
-
-        if not self.validar_fecha(self.fecha_entrega, "fecha de entrega"):
-            es_valido = False
-
-        if self.fecha_devolucion.strip() != "":
-            if not self.validar_fecha(self.fecha_devolucion, "fecha de devolución"):
-                es_valido = False
 
         return es_valido
 

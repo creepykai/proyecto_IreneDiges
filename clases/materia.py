@@ -3,7 +3,8 @@ class Materia:
         self.materia = materia
         self.departamento = departamento
 
-    def contiene_letras(self, texto: str) -> bool:
+    @staticmethod
+    def contiene_letras(texto: str) -> bool:
         contiene: bool = False
         caracter: int = 0
 
@@ -21,7 +22,7 @@ class Materia:
         if self.materia.strip() == "":
             mensaje_error = "El nombre de la materia no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(self.materia.strip()):
+        elif not Materia.contiene_letras(self.materia.strip()):
             mensaje_error = "El nombre de la materia debe contener al menos una letra."
             es_valido = False
 
@@ -36,7 +37,7 @@ class Materia:
         if self.departamento.strip() == "":
             mensaje_error = "El departamento no puede estar vacío."
             es_valido = False
-        elif not self.contiene_letras(self.departamento.strip()):
+        elif not Materia.contiene_letras(self.departamento.strip()):
             mensaje_error = "El departamento debe contener al menos una letra."
             es_valido = False
 
@@ -53,6 +54,19 @@ class Materia:
             es_valido = False
 
         return es_valido
+
+    @staticmethod
+    def contiene_letras(texto: str) -> bool:
+        contiene: bool = False
+        caracter: int = 0
+
+        while caracter < len(texto) and not contiene:
+            if texto[caracter] in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+                contiene = True
+            caracter += 1
+
+        return contiene
+
 
     def __str__(self) -> str:
         return f"Materia: {self.materia} Departamento: {self.departamento}"
