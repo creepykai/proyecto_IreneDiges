@@ -31,9 +31,17 @@ class GestionarLibro:
                          "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', '"
                          + libro.ejemplares +  "', '" + libro.editorial + "', '" + libro.materia + "', " + libro.curso + ")")
 
+            print("El libro se ha creado correctamente.", add_libro)
 
-            print("El libro se ha creado correctamente.")
+            try:
+                conexion_bd.ejecutar_consulta(add_libro)
+                print("El libro se ha creado correctamente.")
+            except:
+                print("No se ha podido crear el libro en la base de datos.")
+
+            conexion_bd.cerrar()
             return libro
+
         else:
             print("No se ha podido crear el libro. Revisa los datos introducidos.")
             return None
