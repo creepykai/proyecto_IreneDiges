@@ -11,41 +11,59 @@ class Prestamo:
         self.fecha_devolucion = fecha_devolucion
         self.estado = estado
 
-    def modificar_datos(self, curso = None, fecha_devolucion = None, estado = None) -> None:
-        if curso is not None:
-            self.curso = curso
-        if fecha_devolucion is not None:
-            self.fecha_devolucion = fecha_devolucion
-        if estado is not None:
-            self.estado = estado
+    @property
+    def alumno(self) -> Alumno:
+        return self._alumno
 
-    def validar_estado(self) -> bool:
-        es_valido: bool = True
-        mensaje_error: str = ""
+    @alumno.setter
+    def alumno(self, valor: Alumno) -> None:
+        self._alumno = valor
 
-        if self.estado not in ["P", "D"]:
-            mensaje_error = "El estado debe ser 'P' (prestado) o 'D' (devuelto)."
-            es_valido = False
+    @property
+    def libro(self) -> Libro:
+        return self._libro
 
-        if not es_valido:
-            print(f"Error: {mensaje_error}")
+    @libro.setter
+    def libro(self, valor: Libro) -> None:
+        self._libro = valor
 
-        return es_valido
+    @property
+    def curso(self) -> Curso:
+        return self._curso
 
-    def validar_datos_prestamo(self) -> bool:
-        es_valido: bool = True
+    @curso.setter
+    def curso(self, valor: Curso) -> None:
+        self._curso = valor
 
-        if not self.validar_estado():
-            es_valido = False
+    @property
+    def fecha_entrega(self) -> str:
+        return self._fecha_entrega
 
-        if not Prestamo.validar_fecha(self.fecha_entrega, "fecha de entrega"):
-            es_valido = False
+    @fecha_entrega.setter
+    def fecha_entrega(self, valor: str) -> None:
+        if not Prestamo.validar_fecha(valor, "fecha de entrega"):
+            raise ValueError("Fecha de entrega no válida.")
+        self._fecha_entrega = valor
 
-        if self.fecha_devolucion.strip() != "":
-            if not Prestamo.validar_fecha(self.fecha_devolucion, "fecha de devolución"):
-                es_valido = False
+    @property
+    def fecha_devolucion(self) -> str:
+        return self._fecha_devolucion
 
-        return es_valido
+    @fecha_devolucion.setter
+    def fecha_devolucion(self, valor: str) -> None:
+        if valor.strip() != "" and not Prestamo.validar_fecha(valor, "fecha de devolución"):
+            raise ValueError("Fecha de devolución no válida.")
+        self._fecha_devolucion = valor
+
+    @property
+    def estado(self) -> str:
+        return self._estado
+
+    @estado.setter
+    def estado(self, valor: str) -> None:
+        if valor not in ["P", "D"]:
+            raise ValueError("El estado debe ser 'P' (prestado) o 'D' (devuelto).")
+        self._estado = valor
 
     @staticmethod
     def validar_fecha(fecha: str, campo: str) -> bool:
@@ -65,6 +83,25 @@ class Prestamo:
             print(f"Error: {mensaje_error}")
 
         return es_valido
+
+    def modificar_datos(self, curso=None, fecha_devolucion=None, estado=None) -> None:
+        if curso is not None:
+            self.curso = curso
+        if fecha_devolucion is not None:
+            self.fecha_devolucion = fecha_devolucion
+        if estado is not None:
+            self.estado = estado
+
+    def validar_datos_prestamo(self) -> bool:
+        try:
+            self.estado = self.estado
+            self.fecha_entrega = self.fecha_entrega
+            if self.fecha_devolucion.strip() != "":
+                self.fecha_devolucion = self.fecha_devolucion
+            return True
+        except ValueError as error:
+            print(f"Error: {error}")
+            return False
 
     def __str__(self) -> str:
         estado_str: str = "Prestado" if self.estado == "P" else "Devuelto"
