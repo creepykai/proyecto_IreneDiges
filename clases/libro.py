@@ -147,14 +147,9 @@ class Libro:
     def validar_ejemplares(self) -> bool:
         es_valido: bool = True
         mensaje_error: str = ""
-        ejemplares_sin_espacios = ""
-        ejemplares_sin_espacios = self.ejemplares.replace(" ", "")
 
-        if self.ejemplares.strip() == "":
-            mensaje_error = "Los ejemplares no pueden estar vacios"
-            es_valido = False
-        elif Libro.contiene_letras(ejemplares_sin_espacios):
-            mensaje_error = "Los ejemplares no pueden estar vacios"
+        if not isinstance(self.ejemplares, int) or self.ejemplares <= 0:
+            mensaje_error = "Los ejemplares deben ser un número entero"
             es_valido = False
 
         if not es_valido:
