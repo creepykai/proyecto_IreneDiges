@@ -7,17 +7,25 @@ class GestionarLibro:
         titulo: str = ""
         editorial: str = ""
         autor : str = ""
-        ejemplares : str = ""
+        ejemplares_str : str = ""
+        ejemplares : int = 0
         materia: str = ""
         curso: str = ""
 
         isbn = input("Introduce el ISBN del libro (13 dígitos): ").strip()
         titulo = input("Introduce el título del libro: ").strip()
         autor = input("Introduce el autor del libro: ").strip()
-        ejemplares = input("Introduce el ejemplar del libro: ").strip()
+        ejemplares_str = input("Introduce el ejemplar del libro: ").strip()
         editorial = input("Introduce la editorial: ").strip()
         materia = input("Introduce la materia: ").strip()
         curso = input("Introduce el curso: ").strip()
+
+
+        try:
+            ejemplares: int = int(ejemplares_str)
+        except ValueError:
+            print("El número de ejemplares debe ser un número entero.")
+            return None
 
         libro: Libro = Libro(isbn, titulo, autor, ejemplares, editorial, materia, curso)
 
@@ -25,13 +33,9 @@ class GestionarLibro:
             conexion_bd = ConexionBD()
             conexion_bd.conectar_base_de_datos()
 
-            ejemplares = int(ejemplares.replace( " ", ""))
-
-            add_libro = ("INSERT INTO libros (isbn, titulo, autor, ejemplares, editorial, materia, curso) " ""
-                         "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', '"
-                         + libro.ejemplares +  "', '" + libro.editorial + "', '" + libro.materia + "', " + libro.curso + ")")
-
-            print("El libro se ha creado correctamente.", add_libro)
+            add_libro = ("INSERT INTO libros (isbn, titulo, autor, numero_ejemplares, editorial, id_materia, id_curso) "
+                         "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', " +
+                         str(libro.ejemplares) + ", '" + libro.editorial + "', '" + libro.materia + "', '" + libro.curso + "')")
 
             try:
                 conexion_bd.ejecutar_consulta(add_libro)
@@ -41,7 +45,6 @@ class GestionarLibro:
 
             conexion_bd.cerrar()
             return libro
-
         else:
             print("No se ha podido crear el libro. Revisa los datos introducidos.")
             return None
