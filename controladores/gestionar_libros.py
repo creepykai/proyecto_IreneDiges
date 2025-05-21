@@ -33,9 +33,11 @@ class GestionarLibro:
             conexion_bd = ConexionBD()
             conexion_bd.conectar_base_de_datos()
 
-            add_libro = ("INSERT INTO libros (isbn, titulo, autor, numero_ejemplares, editorial, id_materia, id_curso) "
-                         "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', " +
-                         str(libro.ejemplares) + ", '" + libro.editorial + "', '" + libro.materia + "', '" + libro.curso + "')")
+            add_libro = (
+                    "INSERT INTO libros (isbn, titulo, autor, ejemplares, editorial, materia, curso) "
+                    "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', " +
+                    str(libro.ejemplares) + ", '" + libro.editorial + "', '" + libro.materia + "', '" + libro.curso + "')"
+            )
 
             try:
                 conexion_bd.ejecutar_consulta(add_libro)
