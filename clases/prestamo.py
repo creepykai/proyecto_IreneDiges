@@ -17,6 +17,8 @@ class Prestamo:
 
     @alumno.setter
     def alumno(self, valor: Alumno) -> None:
+        if not isinstance(valor, Alumno):
+            raise ValueError("Debe asignarse un objeto de tipo Alumno.")
         self._alumno = valor
 
     @property
@@ -25,6 +27,8 @@ class Prestamo:
 
     @libro.setter
     def libro(self, valor: Libro) -> None:
+        if not isinstance(valor, Libro):
+            raise ValueError("Debe asignarse un objeto de tipo Libro.")
         self._libro = valor
 
     @property
@@ -33,6 +37,9 @@ class Prestamo:
 
     @curso.setter
     def curso(self, valor: Curso) -> None:
+        self._curso = valor
+        if not isinstance(valor, Curso):
+            raise ValueError("Debe asignarse un objeto de tipo Curso.")
         self._curso = valor
 
     @property
