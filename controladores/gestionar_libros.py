@@ -20,7 +20,6 @@ class GestionarLibro:
         materia = input("Introduce la materia: ").strip()
         curso = input("Introduce el curso: ").strip()
 
-
         try:
             ejemplares: int = int(ejemplares_str)
         except ValueError:
@@ -29,28 +28,21 @@ class GestionarLibro:
 
         libro: Libro = Libro(isbn, titulo, autor, ejemplares, editorial, materia, curso)
 
-        if libro.validar_datos_libro():
-            conexion_bd = ConexionBD()
-            conexion_bd.conectar_base_de_datos()
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
 
-            add_libro = (
-                    "INSERT INTO libros (isbn, titulo, autor, ejemplares, editorial, materia, curso) "
-                    "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', " +
-                    str(libro.ejemplares) + ", '" + libro.editorial + "', '" + libro.materia + "', '" + libro.curso + "')"
-            )
+        add_libro = ("INSERT INTO libros (isbn, titulo, autor, numero_ejemplares, id_materia, id_curso) "
+                     "VALUES ('" + libro.isbn + "', '" + libro.titulo + "', '" + libro.autor + "', " +
+                     str(libro.ejemplares) + ", '" + libro.materia + "', '" + libro.curso + "')")
 
-            try:
-                conexion_bd.ejecutar_consulta(add_libro)
-                print("El libro se ha creado correctamente.")
-            except:
-                print("No se ha podido crear el libro en la base de datos.")
+        try:
+            conexion_bd.ejecutar_consulta(add_libro)
+            print("El libro se ha creado correctamente.")
+        except:
+            print("No se ha podido crear el libro en la base de datos.")
 
-            conexion_bd.cerrar()
-            return libro
-        else:
-            print("No se ha podido crear el libro. Revisa los datos introducidos.")
-            return None
-
+        conexion_bd.cerrar()
+        return libro
 
     def modificar_libro(self, libro: Libro) -> None:
         nuevo_titulo: str = ""
@@ -81,10 +73,38 @@ class GestionarLibro:
         materia_final = libro.materia if nuevo_materia == "" else nuevo_materia
         curso_final = libro.curso if nuevo_curso == "" else nuevo_curso
 
-        libro_temporal: Libro = Libro(libro.isbn, titulo_final, autor_final, ejemplares_final, editorial_final, materia_final, curso_final)
+        if nuevo_ejemplares != "":
+            try:
+                ejemplares_final = int(nuevo_ejemplares)
+            except ValueError:
+                print("Error: el número de ejemplares debe ser un número entero.")
+                return
 
-        if libro_temporal.validar_datos_libro():
-            libro.modificar_datos(titulo_final, autor_final, ejemplares_final, materia_final, curso_final)
+        try:
+            libro_temporal: Libro = Libro(libro.isbn, titulo_final, autor_final, ejemplares_final, editorial_final, materia_final, curso_final)
+        except ValueError as error:
+            print("Error al modificar el libro:", error)
+            return
+
+        libro.modificar_datos(titulo_final, autor_final, ejemplares_final, materia_final, curso_final)
+
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+
+        consulta: str = (
+                "UPDATE libros SET titulo = '" + libro.titulo +
+                "', autor = '" + libro.autor +
+                "', numero_ejemplares = " + str(libro.ejemplares) +
+                ", editorial = '" + libro.editorial +
+                "', id_materia = '" + libro.materia +
+                "', id_curso = '" + libro.curso +
+                "' WHERE isbn = '" + libro.isbn + "'"
+        )
+
+        try:
+            conexion_bd.ejecutar_consulta(consulta)
             print("El libro se ha modificado correctamente.")
-        else:
-            print("No se han guardado los datos porque no son válidos.")
+        except:
+            print("No se ha podido modificar el libro en la base de datos.")
+
+        conexion_bd.cerrar()

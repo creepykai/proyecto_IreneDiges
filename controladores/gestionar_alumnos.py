@@ -24,32 +24,31 @@ class GestionarAlumnos:
         else:
             print("Entrada no válida para bilingüe. Se ha tomado como 'No bilingüe'")
 
-        alumno: Alumno = Alumno(nie, nombre, apellido, tramo, bilingue)
+        try:
+            alumno: Alumno = Alumno(nie, nombre, apellido, tramo, bilingue)
+        except ValueError as e:
+            print("Error al crear el alumno:", e)
+            return None
+
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
 
         bilingue_int = 1 if alumno.bilingue else 0
 
-        if alumno.validacion_datos_alumno():
-            conexion_bd = ConexionBD()
-            conexion_bd.conectar_base_de_datos()
+        add_persona = ("INSERT INTO alumnos (nie, nombre, apellido, tramo, bilingue) "
+                       "VALUES ('" + alumno.nie + "', '" + alumno.nombre + "', '" +
+                       alumno.apellidos + "', '" + alumno.tramo + "', " + str(bilingue_int) + ")")
 
-            add_persona = ("INSERT INTO alumnos (nie, nombre, apellido, tramo, bilingue) "
-                           "VALUES ('" + alumno.nie + "', '" + alumno.nombre + "', '" +
-                alumno.apellidos + "', '" + alumno.tramo + "', " + str(bilingue_int) + ")")
+        print("Alumno añadido:", add_persona)
 
-            print("Alumno añadido:", add_persona)
+        try:
+            conexion_bd.ejecutar_consulta(add_persona)
+            print("El alumno se ha creado correctamente.")
+        except:
+            print("No se ha podido crear el alumno en la base de datos.")
 
-            try:
-                conexion_bd.ejecutar_consulta(add_persona)
-                print("El alumno se ha creado correctamente.")
-            except:
-                print("No se ha podido crear el alumno en la base de datos.")
-
-            conexion_bd.cerrar()
-            return alumno
-
-        else:
-            print("No se ha podido agregar el alumno porque los datos no son válidos.")
-            return None
+        conexion_bd.cerrar()
+        return alumno
 
 
     def modificar_alumno(self, alumno: Alumno) -> None:
@@ -57,13 +56,8 @@ class GestionarAlumnos:
         nuevo_apellido: str = ""
         nuevo_tramo: str = ""
         nuevo_str_bilingue: str = ""
-
-        nombre_final: str = alumno.nombre
-        apellidos_final: str = alumno.apellidos
-        tramo_final: str = alumno.tramo
         bilingue_final: bool = alumno.bilingue
         bilingue_int: int = 0
-
 
         nuevo_nombre = input("Ingrese el nuevo nombre del alumno / Dejar vacío si no se quiere modificar: ").strip()
         nuevo_apellido = input("Ingrese el nuevo apellido del alumno / Dejar vacío si no se quiere modificar: ").strip()
@@ -78,32 +72,33 @@ class GestionarAlumnos:
             bilingue_final = True
         elif nuevo_str_bilingue == "n":
             bilingue_final = False
-        else:
-            bilingue_final = alumno.bilingue
 
         alumno_temporal: Alumno = Alumno(alumno.nie, nombre_final, apellidos_final, tramo_final, bilingue_final)
 
-        if alumno_temporal.validacion_datos_alumno():
-            alumno.modificar_datos(nombre_final, apellidos_final, tramo_final, bilingue_final)
+        try:
+            alumno_temporal: Alumno = Alumno(alumno.nie, nombre_final, apellidos_final, tramo_final, bilingue_final)
+        except ValueError as e:
+            print("Error al modificar el alumno:", e)
+            return
 
-            bilingue_int = 1 if bilingue_final else 0
+        alumno.modificar_datos(nombre_final, apellidos_final, tramo_final, bilingue_final)
 
-            conexion_bd = ConexionBD()
-            conexion_bd.conectar_base_de_datos()
+        bilingue_int = 1 if bilingue_final else 0
 
-            mod_alumno = ( "UPDATE alumnos SET nombre = '" + nombre_final +
-                "', apellido = '" + apellidos_final +
-                "', tramo = '" + tramo_final +
-                "', bilingue = " + str(bilingue_int) +
-                " WHERE nie = '" + alumno.nie + "'")
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
 
-            try:
-                conexion_bd.ejecutar_consulta(mod_alumno)
-                print("El alumno se ha modificado correctamente.")
+        mod_alumno = ( "UPDATE alumnos SET nombre = '" + nombre_final +
+            "', apellido = '" + apellidos_final +
+            "', tramo = '" + tramo_final +
+            "', bilingue = " + str(bilingue_int) +
+            " WHERE nie = '" + alumno.nie + "'")
 
-            except:
-                print("Error al modificar el alumno en la base de datos.")
-            conexion_bd.cerrar()
+        try:
+            conexion_bd.ejecutar_consulta(mod_alumno)
+            print("El alumno se ha modificado correctamente.")
 
-        else:
-            print("No se han guardado los cambios porque los datos no son válidos.")
+        except:
+            print("Error al modificar el alumno en la base de datos.")
+        conexion_bd.cerrar()
+

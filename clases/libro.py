@@ -89,6 +89,20 @@ class Libro:
     def contiene_letras(texto: str) -> bool:
         return any(caracter.isalpha() for caracter in texto)
 
+    def modificar_datos(self, titulo=None, autor=None, ejemplares=None, editorial=None, materia=None, curso=None) -> None:
+        if titulo is not None:
+            self.titulo = titulo
+        if autor is not None:
+            self.autor = autor
+        if ejemplares is not None:
+            self.ejemplares = ejemplares
+        if editorial is not None:
+            self.editorial = editorial
+        if materia is not None:
+            self.materia = materia
+        if curso is not None:
+            self.curso = curso
+
     def __str__(self):
         return f"ISBN: {self.isbn} Título: {self.titulo} Autor: {self.autor} Ejemplares: {self.ejemplares} Editorial: {self.editorial} Materia: {self.materia} Curso: {self.curso}"
 
