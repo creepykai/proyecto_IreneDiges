@@ -1,8 +1,8 @@
+from conexion_bd import ConexionBD
 from clases.prestamo import Prestamo
 from clases.alumno import Alumno
 from clases.libro import Libro
 from clases.curso import Curso
-from conexion_bd import ConexionBD
 
 
 class GestionarPrestamo:
