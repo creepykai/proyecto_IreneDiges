@@ -111,13 +111,15 @@ class GestionarPrestamo:
             conexion_bd.conectar_base_de_datos()
 
             update_prestamo = ("UPDATE alumnoscrusoslibros SET curso = '" + curso_final.curso +
-        "', fecha_devolucion = '" + fecha_devolucion_final + "', estado = '" + estado_final +
-        "' WHERE nie = '" + prestamo.alumno.nie + "' AND isbn = '" + prestamo.libro.isbn + "'")
+            "', fecha_devolucion = '" + fecha_devolucion_final + "', estado = '" + estado_final +
+            "' WHERE nie = '" + prestamo.alumno.nie + "' AND isbn = '" + prestamo.libro.isbn + "'")
 
-        try:
-            conexion_bd.ejecutar_consulta(update_prestamo)
-            print("Los datos del préstamo se han actualziado en la base de datos")
-        except:
-            print("No se ha podido actualizar el préstamo en la base de datos")
+            try:
+                conexion_bd.ejecutar_consulta(update_prestamo)
+                print("Los datos del préstamo se han actualziado en la base de datos")
+            except:
+                print("No se ha podido actualizar el préstamo en la base de datos")
+            conexion_bd.cerrar()
+        else:
+            print("Los datos no se han guardado porque no son válidos")
 
-        conexion_bd.cerrar()
