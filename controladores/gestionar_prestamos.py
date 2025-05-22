@@ -67,8 +67,22 @@ class GestionarPrestamo:
         prestamo = Prestamo(alumno, libro, curso, fecha_entrega, estado, fecha_devolucion)
 
         if prestamo.validar_datos_prestamo():
-            print("El préstamo se ha creado correctamente.")
+            from conexion_bd import ConexionBD
+            conexion_bd = ConexionBD()
+            conexion_bd.conectar_base_de_datos()
+
+            insert_prestamo = ("INSERT INTO alumnoscrusoslibros (nie, curso, isbn, fecha_entrega, fecha_devolucion, estado) VALUES ('"
+                + alumno.nie + "', '" + curso.curso + "', '" + libro.isbn + "', '"
+                + fecha_entrega + "', '" + fecha_devolucion + "', '" + estado + "')")
+            try:
+                conexion_bd.ejecutar_consulta(insert_prestamo)
+                print("El préstamo se ha guardado correctamente.")
+            except:
+                print("No se ha podido guardar el préstamo en la base de datos.")
+
+            conexion_bd.cerrar()
             return prestamo
+
         else:
             print("No se ha podido crear el préstamo.")
             return None
