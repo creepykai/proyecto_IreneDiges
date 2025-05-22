@@ -2,6 +2,8 @@ from clases.prestamo import Prestamo
 from clases.alumno import Alumno
 from clases.libro import Libro
 from clases.curso import Curso
+from conexion_bd import ConexionBD
+
 
 class GestionarPrestamo:
     def crear_prestamo(self) -> Prestamo:
@@ -104,5 +106,18 @@ class GestionarPrestamo:
         if prestamo_temp.validar_datos_prestamo():
             prestamo.modificar_datos(curso_final, fecha_devolucion_final, estado_final)
             print("El préstamo se ha modificado correctamente.")
-        else:
-            print("No se han guardado los cambios porque los datos no son válidos.")
+
+            conexion_bd = ConexionBD()
+            conexion_bd.conectar_base_de_datos()
+
+            update_prestamo = ("UPDATE alumnoscrusoslibros SET curso = '" + curso_final.curso +
+        "', fecha_devolucion = '" + fecha_devolucion_final + "', estado = '" + estado_final +
+        "' WHERE nie = '" + prestamo.alumno.nie + "' AND isbn = '" + prestamo.libro.isbn + "'")
+
+        try:
+            conexion_bd.ejecutar_consulta(update_prestamo)
+            print("Los datos del préstamo se han actualziado en la base de datos")
+        except:
+            print("No se ha podido actualizar el préstamo en la base de datos")
+
+        conexion_bd.cerrar()
