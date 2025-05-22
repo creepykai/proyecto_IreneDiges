@@ -14,9 +14,14 @@ class GestionarPrestamo:
 
         isbn: str = ""
         titulo: str = ""
+        autor: str = ""
+        ejemplares_str: str = ""
         editorial: str = ""
         materia: str = ""
         curso_nombre: str = ""
+        ejemplares:int = 0
+
+        nivel : str = ""
 
         fecha_entrega: str = ""
         estado: str = ""
@@ -33,13 +38,23 @@ class GestionarPrestamo:
 
         isbn = input("Introduce el ISBN del libro: ").strip()
         titulo = input("Introduce el título del libro: ").strip()
+        autor = input("Introduce el autor del libro: ").strip()
+        ejemplares_str = input("Introduce los ejemplares del libro: ").strip()
         editorial = input("Introduce la editorial: ").strip()
         materia = input("Introduce la materia: ").strip()
         curso_nombre = input("Introduce el curso del libro: ").strip()
 
-        libro = Libro(isbn, titulo, editorial, materia, curso_nombre)
+        try:
+            ejemplares = int(ejemplares_str.replace(",", ""))
+        except ValueError:
+            print("Los ejemplares deben ser un número entero")
+            return None
 
-        curso = Curso(curso_nombre, "")
+        libro = Libro(isbn, titulo, autor, ejemplares, editorial, materia, curso_nombre)
+
+        nivel = input("Introduce el nivel del curso: ").strip()
+
+        curso = Curso(curso_nombre, nivel)
 
         fecha_entrega = input("Introduce la fecha de entrega (AAAA-MM-DD): ").strip()
         estado = input("Introduce el estado del préstamo (P = Prestado, D = Devuelto): ").strip().upper()
