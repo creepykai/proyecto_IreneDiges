@@ -1,40 +1,64 @@
+from clases import curso
+from conexion_bd import ConexionBD
 from clases.curso import Curso
 
 class GestionarCurso:
     def crear_curso(self) -> Curso:
-        curso: str = ""
+        n_curso: str = ""
         nivel:str = ""
 
-        nivel = input("Introduce el nivel del curso (ESO, Bachillerato:").strip()
-        curso = input("Introduce el número de curso:").strip()
+        curso = input("Introduce el nombre del curso (Ej: 1ESO, 2ESO, 1BACH, 2BACH): ").strip().upper()
+        nivel = input("Introduce el nivel académico (Ej: ESO, Bachillerato, FP): ").strip().capitalize()
 
-        curso_objeto: Curso = Curso(curso, nivel)
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
 
-        if curso_objeto.validar_datos_curso():
-            print("El curso se ha creado correctamente.")
-            return curso_objeto
+        consulta = "SELECT * FROM cursos WHERE curso = '" + curso + "'"
+        datos_curso = conexion_bd.obtener_datos(consulta)
+
+        if len(datos_curso) == 0:
+            curso_objeto = Curso(curso, nivel)
+            insertar = "INSERT INTO cursos (curso, nivel) VALUES ('" + curso + "', '" + nivel + "')"
+            try:
+                conexion_bd.ejecutar_consulta(insertar)
+                print("El curso se ha guardado correctamente.")
+            except:
+                print("No se pudo crear el curso.")
+                conexion_bd.cerrar()
+                return None
         else:
-            print("No se ha podido crear el curso. Revisa los datos introducidos.")
+            print("El curso ya existe.")
+            conexion_bd.cerrar()
             return None
 
+        conexion_bd.cerrar()
+        return curso_objeto
+
     def modificar_curso(self, curso_objeto: Curso) -> None:
-        nuevo_curso: str = ""
+        nombre_curso: str = ""
         nuevo_nivel: str = ""
-        curso_final: str = ""
-        nivel_final: str = ""
 
-        nuevo_nivel = input("Introduce el nuevo nivel educativo (ESO, Bachillerato) / Dejar vacío para no modificar:").strip()
-        nuevo_curso = input("Introduce el número de curso / Dejar vacio para no modificar:").strip()
+        nombre_curso = input("Introduce el nombre del curso que deseas modificar")
 
-        curso_final = curso_objeto.curso if nuevo_curso == "" else nuevo_curso
-        nivel_final = curso_objeto.nivel if nuevo_nivel == "" else nuevo_nivel
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
 
-        curso_temporal: Curso = Curso(curso_final, nivel_final)
+        consulta = "SELECT * FROM cursos WHERE curso = '" + nombre_curso + "'"
+        datos_curso = conexion_bd.obtener_datos(consulta)
 
-        if curso_temporal.validar_datos_curso():
-            curso_objeto.curso = curso_final
-            curso_objeto.nivel = nivel_final
+        if len(datos_curso) == 0:
+            print("El curso no existe.")
+            conexion_bd.cerrar()
+            return None
+
+        nuevo_nivel = input("Introduce el nivel que deseas modificar (Ej: ESO, Bachillerato, FP)")
+
+        actualizar = "UPDATE cursos SET nivel = '" + nuevo_nivel + "' WHERE curso = '" + nombre_curso + "'"
+
+        try:
+            conexion_bd.ejecutar_consulta(actualizar)
             print("El curso se ha modificado correctamente.")
-        else:
-            print("No se ha podido modificar el curso.")
+        except:
+            print("No se ha podido modificar el curso en la base de datos.")
 
+        conexion_bd.cerrar()
