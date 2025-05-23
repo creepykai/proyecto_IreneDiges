@@ -81,7 +81,7 @@ class GestionarPrestamo:
             datos = datos_curso[0]
             curso = Curso(datos[0], datos[1])
 
-        fecha_entrega = input("Introduce la fecha de (AAAA-MM-DD): ").strip()
+        fecha_entrega = input("Introduce la fecha de entrega (AAAA-MM-DD): ").strip()
         estado = input("Introduce el estado del alumno (P = prestado o D = devuelto): ").strip()
 
         if estado == "D":
@@ -91,8 +91,9 @@ class GestionarPrestamo:
 
         if prestamo.validar_datos_prestamo():
             insert_prestamo = ("INSERT INTO alumnoscrusoslibros (nie, curso, isbn, fecha_entrega, fecha_devolucion, estado) VALUES ('"
-                + alumno.nie + "', '" + curso.curso + "', '" + libro.isbn + "', '"
-                + fecha_entrega + "', '" + fecha_devolucion + "', '" + estado + "')")
+                        + alumno.nie + "', '" + curso.curso + "', '" + libro.isbn + "', '"
+                        + fecha_entrega + "', '" + fecha_devolucion + "', '" + estado + "')")
+
             try:
                 conexion_bd.ejecutar_consulta(insert_prestamo)
                 print("El préstamo se ha guardado correctamente.")
@@ -147,7 +148,6 @@ class GestionarPrestamo:
                     conexion_bd.cerrar()
                     return
 
-            conexion_bd.cerrar()
             curso_final = Curso(nuevo_curso, "")
 
         if nueva_fecha_devolucion != "":
@@ -168,7 +168,6 @@ class GestionarPrestamo:
             prestamo.modificar_datos(curso_final, fecha_devolucion_final, estado_final)
             print("El préstamo se ha modificado correctamente.")
 
-            conexion_bd = ConexionBD()
             conexion_bd.conectar_base_de_datos()
 
             update_prestamo = ("UPDATE alumnoscursoslibros SET curso = '" + curso_final.curso +
