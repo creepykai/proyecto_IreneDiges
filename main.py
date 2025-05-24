@@ -24,7 +24,7 @@ class App:
             opcion = input("Elige una opcion: ").strip()
             match opcion:
                 case "1":
-                    GestionarAlumnos.crear_alumno()
+                    GestionarAlumnos.crear_alumno(self)
                 case "2":
                     nie = input("Introduce el numero de identificación escolar del alumno que quieres modificar: ")
                     GestionarAlumnos.modificar_alumno(nie)
