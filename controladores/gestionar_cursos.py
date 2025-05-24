@@ -73,7 +73,7 @@ class GestionarCurso:
         try:
             conexion_bd.ejecutar_consulta(update_curso)
             print("El curso se ha modificado correctamente.")
-        except:
-            print("Error al modificar el curso en la base de datos.")
+        except ValueError as error:
+            print("Error al modificar el curso en la base de datos. Error:", error )
         finally:
             conexion_bd.cerrar()

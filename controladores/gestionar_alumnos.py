@@ -60,8 +60,8 @@ class GestionarAlumnos:
         try:
             conexion_bd.ejecutar_consulta(add_persona)
             print("El alumno se ha creado correctamente.")
-        except ValueError as e:
-            print("No se ha podido crear el alumno en la base de datos.")
+        except ValueError as error:
+            print("No se ha podido crear el alumno en la base de datos. Error:", error)
         finally:
             conexion_bd.cerrar()
 
@@ -97,8 +97,8 @@ class GestionarAlumnos:
 
         try:
             alumno_temp = Alumno(alumno.nie, nombre_final, apellido_final, tramo_final, bilingue_final)
-        except ValueError as e:
-            print("Error al modificar el alumno:", e)
+        except ValueError as error:
+            print("Error al modificar el alumno:", eror)
             return
 
         conexion_bd = ConexionBD()

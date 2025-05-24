@@ -71,8 +71,8 @@ class GestionarLibro:
         try:
             conexion_bd.ejecutar_consulta(add_libro)
             print("El libro se ha creado correctamente.")
-        except:
-            print("No se ha podido crear el libro en la base de datos.")
+        except ValueError as error:
+            print("No se ha podido crear el libro en la base de datos. Error:", error)
 
         conexion_bd.cerrar()
         return libro
@@ -138,7 +138,7 @@ class GestionarLibro:
         try:
             conexion_bd.ejecutar_consulta(update_libro)
             print("El libro se ha modificado correctamente.")
-        except:
-            print("Error al modificar el libro en la base de datos.")
+        except ValueError as error:
+            print("Error al modificar el libro en la base de datos. Error", error)
         finally:
             conexion_bd.cerrar()

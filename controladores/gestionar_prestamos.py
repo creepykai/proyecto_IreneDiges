@@ -86,8 +86,8 @@ class GestionarPrestamo:
             try:
                 conexion_bd.ejecutar_consulta(insert_prestamo)
                 print("El préstamo se ha guardado correctamente.")
-            except Exception as e:
-                print("No se ha podido guardar el préstamo en la base de datos:", e)
+            except Exception as error:
+                print("No se ha podido guardar el préstamo en la base de datos:", error)
         else:
             print("No se ha podido crear el préstamo: datos inválidos.")
 
@@ -127,8 +127,8 @@ class GestionarPrestamo:
                 estado_final,
                 fecha_devolucion_final
             )
-        except ValueError as e:
-            print("Error al modificar el préstamo:", e)
+        except ValueError as error:
+            print("Error al modificar el préstamo:", error)
             return
 
         conexion_bd = ConexionBD()
@@ -140,7 +140,7 @@ class GestionarPrestamo:
         try:
             conexion_bd.ejecutar_consulta(update_prestamo)
             print("El préstamo se ha modificado correctamente en la base de datos.")
-        except:
-            print("Error al modificar el préstamo en la base de datos.")
+        except ValueError as error:
+            print("Error al modificar el préstamo en la base de datos. Error:", error)
         finally:
             conexion_bd.cerrar()

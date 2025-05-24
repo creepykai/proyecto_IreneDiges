@@ -52,8 +52,8 @@ class GestionarMaterias:
         try:
             conexion_bd.ejecutar_consulta(insertar)
             print("Materia creada con exito")
-        except:
-            print("No se ha podido guardar la materia en la BDD")
+        except ValueError as error:
+            print("No se ha podido guardar la materia en la BDD. Error: ", error)
 
         conexion_bd.cerrar()
         return materia
@@ -89,7 +89,7 @@ class GestionarMaterias:
         try:
             conexion_bd.ejecutar_consulta(update_materia)
             print("La materia se ha modificado correctamente.")
-        except:
-            print("Error al modificar la materia en la base de datos.")
+        except ValueError as error:
+            print("Error al modificar la materia en la base de datos. Error: ", error)
         finally:
             conexion_bd.cerrar()
