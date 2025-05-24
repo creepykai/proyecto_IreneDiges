@@ -77,56 +77,38 @@ class GestionarAlumnos:
         tramo_final: str = alumno.tramo
         bilingue_final: bool = alumno.bilingue
 
-        nuevo_nombre = input("Ingrese el nuevo nombre / Dejar vacío si no se quiere modificar: ").strip()
-        nuevo_apellido = input("Ingrese el nuevo apellido / Dejar vacío si no se quiere modificar: ").strip()
-        nuevo_tramo = input("Introduce el nuevo tramo (0, I, II) / Dejar vacío si no se quiere modificar: ").strip().upper()
-        nuevo_str_bilingue = input("¿Es bilingüe? (s/n) / Dejar vacío si no se quiere modificar: ").strip().lower()
+        nuevo_nombre = input("Introduce el nuevo nombre / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_nombre != "":
+            nombre_final = nuevo_nombre
 
-        nombre_final = alumno.nombre if nuevo_nombre == "" else nuevo_nombre
-        apellidos_final = alumno.apellidos if nuevo_apellido == "" else nuevo_apellido
-        tramo_final = alumno.tramo if nuevo_tramo == "" else nuevo_tramo
-        bilingue_final = alumno.bilingue
+        nuevo_apellido = input("Introduce el nuevo apellido / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_apellido != "":
+            apellido_final = nuevo_apellido
 
-        if nuevo_nombre != "" and not any(c.isalpha() for c in nuevo_nombre):
-            print("Nombre no modificado: debe contener letras.")
-            nombre_final = alumno.nombre
+        nuevo_tramo = input(
+            "Introduce el nuevo tramo (0, I, II) / Dejar vacío si no se quiere modificar: ").strip().upper()
+        if nuevo_tramo in ["0", "I", "II"]:
+            tramo_final = nuevo_tramo
 
-        if nuevo_apellido != "" and not any(c.isalpha() for c in nuevo_apellido):
-            print("Apellido no modificado: debe contener letras.")
-            apellidos_final = alumno.apellidos
-
-        if nuevo_tramo != "" and nuevo_tramo not in ["0", "I", "II"]:
-            print("Tramo no modificado: debe ser 0, I o II.")
-            tramo_final = alumno.tramo
-
-        if nuevo_str_bilingue != "":
-            if nuevo_str_bilingue in ["s", "n"]:
-                bilingue_final = True if nuevo_str_bilingue == "s" else False
-            else:
-                print("Bilingüe no modificado: debe ser 's' o 'n'.")
+        nuevo_bilingue_str = input("¿Es bilingüe? (s/n) / Dejar vacío si no se quiere modificar: ").strip().lower()
+        if nuevo_bilingue_str in ["s", "n"]:
+            bilingue_final = True if nuevo_bilingue_str == "s" else False
+            bilingue_int = 1 if bilingue_final else 0
 
         try:
-            alumno_temporal = Alumno(alumno.nie, nombre_final, apellidos_final, tramo_final, bilingue_final)
+            alumno_temp = Alumno(alumno.nie, nombre_final, apellido_final, tramo_final, bilingue_final)
         except ValueError as e:
-            print("Error al validar los nuevos datos:", e)
+            print("Error al modificar el alumno:", e)
             return
-
-        alumno.modificar_datos(nombre_final, apellidos_final, tramo_final, bilingue_final)
-        bilingue_int = 1 if bilingue_final else 0
 
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
 
-        mod_alumno = (
-            "UPDATE alumnos SET nombre = '" + nombre_final +
-            "', apellidos = '" + apellidos_final +
-            "', tramo = '" + tramo_final +
-            "', bilingue = " + str(bilingue_int) +
-            " WHERE nie = '" + alumno.nie + "'"
-        )
+        update_alumno = ("UPDATE alumnos SET nombre = '" + nombre_final + "', apellidos = '" + apellido_final +
+                "', tramo = '" + tramo_final + "', bilingue = " + str(bilingue_int) + " WHERE nie = '" + alumno.nie + "'")
 
         try:
-            conexion_bd.ejecutar_consulta(mod_alumno)
+            conexion_bd.ejecutar_consulta(update_alumno)
             print("El alumno se ha modificado correctamente.")
         except:
             print("Error al modificar el alumno en la base de datos.")

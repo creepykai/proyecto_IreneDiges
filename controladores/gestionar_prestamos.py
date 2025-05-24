@@ -104,74 +104,43 @@ class GestionarPrestamo:
         estado_final: str = prestamo.estado
 
         nuevo_curso = input("Introduce el nuevo curso / Dejar vacío si no se quiere modificar: ").strip()
-        nueva_fecha_devolucion = input("Introduce la fecha de devolución (AAAA-MM-DD) / Dejar vacío si no se quiere modificar: ").strip()
-        nuevo_estado = input("Introduce el estado (P = Prestado, D = Devuelto) / Dejar vacío si no se quiere modificar: ").strip().upper()
-
         if nuevo_curso != "":
-            conexion_bd = ConexionBD()
-            conexion_bd.conectar_base_de_datos()
-
-            consulta = "SELECT curso FROM cursos WHERE curso = '" + nuevo_curso + "'"
-            resultados = conexion_bd.obtener_datos(consulta)
-
-            if len(resultados) == 0:
-                print("El curso no existe ¿Quieres crearlo?")
-                respuesta = input("s/n: ").strip().lower()
-                if respuesta == "s":
-                    nivel = input("Introduce el nivel del curso: ")
-                    insertar = "INSERT INTO cursos (curso, nivel) VALUES ('" + nuevo_curso + "', '" + nivel + "')"
-                    try:
-                        conexion_bd.ejecutar_consulta(insertar)
-                        print("El curso se ha guardado correctamente.")
-                    except:
-                        print("No se pudo crear el curso.")
-                        conexion_bd.cerrar()
-                        return
-                else:
-                    print("No se ha podido modificar el préstamo.")
-                    conexion_bd.cerrar()
-                    return
-
-            conexion_bd.cerrar()
             curso_final = Curso(nuevo_curso, "")
+
+        nueva_fecha_devolucion = input("Introduce la nueva fecha de devolución (AAAA-MM-DD) / Dejar vacío si no se quiere modificar: ").strip()
 
         if nueva_fecha_devolucion != "":
             fecha_devolucion_final = nueva_fecha_devolucion
+
+        nuevo_estado = input(
+            "Introduce el nuevo estado (P = Prestado, D = Devuelto) / Dejar vacío si no se quiere modificar: ").strip().upper()
+
         if nuevo_estado in ["P", "D"]:
             estado_final = nuevo_estado
 
-        prestamo_temp: Prestamo = Prestamo(
-            prestamo.alumno,
-            prestamo.libro,
-            curso_final,
-            prestamo.fecha_entrega,
-            estado_final,
-            fecha_devolucion_final
-        )
+        try:
+            prestamo_temp = Prestamo(
+                prestamo.alumno,
+                prestamo.libro,
+                curso_final,
+                prestamo.fecha_entrega,
+                estado_final,
+                fecha_devolucion_final
+            )
+        except ValueError as e:
+            print("Error al modificar el préstamo:", e)
+            return
 
-        if prestamo_temp.validar_datos_prestamo():
-            prestamo.modificar_datos(curso_final, fecha_devolucion_final, estado_final)
-            print("El préstamo se ha modificado correctamente.")
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
 
-            conexion_bd = ConexionBD()
-            conexion_bd.conectar_base_de_datos()
+        update_prestamo = ("UPDATE alumnoscursoslibros SET curso = '" + curso_final.curso +"', fecha_devolucion = '" + fecha_devolucion_final +
+                "', estado = '" + estado_final + "' WHERE nie = '" + prestamo.alumno.nie + "' AND isbn = '" + prestamo.libro.isbn + "'")
 
-            if fecha_devolucion_final.strip() == "":
-                fecha_devolucion_sql = "NULL"
-            else:
-                fecha_devolucion_sql = "'" + fecha_devolucion_final + "'"
-
-            update_prestamo = ("UPDATE alumnoscursoslibros SET curso = '" + curso_final.curso +
-                               "', fecha_devolucion = " + fecha_devolucion_sql +
-                               ", estado = '" + estado_final +
-                               "' WHERE nie = '" + prestamo.alumno.nie +
-                               "' AND isbn = '" + prestamo.libro.isbn + "'")
-
-            try:
-                conexion_bd.ejecutar_consulta(update_prestamo)
-                print("Los datos del préstamo se han actualizado en la base de datos.")
-            except:
-                print("No se ha podido actualizar el préstamo en la base de datos.")
+        try:
+            conexion_bd.ejecutar_consulta(update_prestamo)
+            print("El préstamo se ha modificado correctamente en la base de datos.")
+        except:
+            print("Error al modificar el préstamo en la base de datos.")
+        finally:
             conexion_bd.cerrar()
-        else:
-            print("Los datos no se han guardado porque no son válidos.")

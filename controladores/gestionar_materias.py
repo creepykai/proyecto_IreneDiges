@@ -51,37 +51,35 @@ class GestionarMaterias:
     def modificar_materia(self, materia: Materia) -> None:
         nuevo_nombre: str = ""
         nuevo_departamento: str = ""
-        nombre_final: str = ""
-        departamento_final: str = ""
 
-        nuevo_nombre = input("Introduce el nuevo nombre de la materia / Dejar vacío si no se quiere modificar: ").strip()
+        nombre_final: str = materia.materia
+        departamento_final: str = materia.departamento
+
+        nuevo_nombre = input(
+            "Introduce el nuevo nombre de la materia / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_nombre != "":
+            nombre_final = nuevo_nombre
+
         nuevo_departamento = input("Introduce el nuevo departamento / Dejar vacío si no se quiere modificar: ").strip()
-
-        nombre_final = materia.materia if nuevo_nombre == "" else nuevo_nombre
-        departamento_final = materia.departamento if nuevo_departamento == "" else nuevo_departamento
+        if nuevo_departamento != "":
+            departamento_final = nuevo_departamento
 
         try:
-            materia_temp = Materia(materia.id, nombre_final, departamento_final)
-        except ValueError as error:
-            print("Error al modificar la materia:", error)
+            materia_temporal = Materia(materia.id, nombre_final, departamento_final)
+        except ValueError as e:
+            print("Error al modificar la materia:", e)
             return
-
-        materia.materia = materia_temp.materia
-        materia.departamento = materia_temp.departamento
 
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
 
-        update = (
-                "UPDATE materias SET materia = '" + materia.materia +
-                "', departamento = '" + materia.departamento +
-                "' WHERE id = " + str(materia.id)
-        )
+        update_materia = ("UPDATE materias SET materia = '" + nombre_final + "', departamento = '" + departamento_final +
+                "' WHERE id = " + str(materia.id))
 
         try:
-            conexion_bd.ejecutar_consulta(update)
+            conexion_bd.ejecutar_consulta(update_materia)
             print("La materia se ha modificado correctamente.")
         except:
-            print("No se pudo modificar la materia en la base de datos.")
-
-        conexion_bd.cerrar()
+            print("Error al modificar la materia en la base de datos.")
+        finally:
+            conexion_bd.cerrar()

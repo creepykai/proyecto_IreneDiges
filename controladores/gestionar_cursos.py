@@ -42,31 +42,37 @@ class GestionarCurso:
         return curso
 
 
-    def modificar_curso(self, curso_objeto: Curso) -> None:
+    def modificar_curso(self, curso: Curso) -> None:
         nombre_curso: str = ""
         nuevo_nivel: str = ""
 
-        nombre_curso = input("Introduce el nombre del curso que deseas modificar")
+        nombre_final: str = curso.curso
+        nivel_final: str = curso.nivel
+
+        nuevo_nombre = input("Introduce el nuevo nombre del curso / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_nombre != "":
+            nombre_final = nuevo_nombre
+
+        nuevo_nivel = input("Introduce el nuevo nivel del curso / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_nivel != "":
+            nivel_final = nuevo_nivel
+
+        try:
+            curso_temporal = Curso(nombre_final, nivel_final)
+        except ValueError as e:
+            print("Error al modificar el curso:", e)
+            return
 
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
 
-        consulta = "SELECT * FROM cursos WHERE curso = '" + nombre_curso + "'"
-        datos_curso = conexion_bd.obtener_datos(consulta)
-
-        if len(datos_curso) == 0:
-            print("El curso no existe.")
-            conexion_bd.cerrar()
-            return None
-
-        nuevo_nivel = input("Introduce el nivel que deseas modificar (Ej: ESO, Bachillerato, FP)")
-
-        actualizar = "UPDATE cursos SET nivel = '" + nuevo_nivel + "' WHERE curso = '" + nombre_curso + "'"
+        update_curso = ("UPDATE cursos SET nombre = '" + nombre_final + "', nivel = '" + nivel_final +
+                "' WHERE nombre = '" + curso.curso + "'")
 
         try:
-            conexion_bd.ejecutar_consulta(actualizar)
+            conexion_bd.ejecutar_consulta(update_curso)
             print("El curso se ha modificado correctamente.")
         except:
-            print("No se ha podido modificar el curso en la base de datos.")
-
-        conexion_bd.cerrar()
+            print("Error al modificar el curso en la base de datos.")
+        finally:
+            conexion_bd.cerrar()

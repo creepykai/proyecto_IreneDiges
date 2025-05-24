@@ -85,59 +85,60 @@ class GestionarLibro:
         nuevo_materia: str = ""
         nuevo_curso: str = ""
 
-        titulo_final: str = ""
-        autor_final: str = ""
-        ejemplares_final: str = ""
-        editorial_final: str = ""
-        materia_final: str = ""
-        curso_final: str = ""
+        titulo_final: str = libro.titulo
+        autor_final: str = libro.autor
+        ejemplares_final: int = libro.ejemplares
+        editorial_final: str = libro.editorial
+        materia_final: str = libro.materia
+        curso_final: str = libro.curso
 
         nuevo_titulo = input("Introduce el nuevo título / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_titulo != "":
+            titulo_final = nuevo_titulo
+
         nuevo_autor = input("Introduce el nuevo autor / Dejar vacío si no se quiere modificar: ").strip()
-        nuevo_ejemplares = input("Introduce el nuevo número de ejemplares / Dejar vacío si no se quiere modificar:").strip()
-        nuevo_editorial = input("Introduce la nueva editorial / Dejar vacío si no se quiere modificar: ").strip()
-        nuevo_materia = input("Introduce la nueva materia / Dejar vacío si no se quiere modificar: ").strip()
-        nuevo_curso = input("Introduce el nuevo curso / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_autor != "":
+            autor_final = nuevo_autor
 
-        titulo_final = libro.titulo if nuevo_titulo == "" else nuevo_titulo
-        autor_final = libro.autor if nuevo_autor == "" else nuevo_autor
-        ejemplares_final = libro.ejemplares if nuevo_ejemplares == "" else nuevo_ejemplares
-        editorial_final = libro.editorial if nuevo_editorial == "" else nuevo_editorial
-        materia_final = libro.materia if nuevo_materia == "" else nuevo_materia
-        curso_final = libro.curso if nuevo_curso == "" else nuevo_curso
-
-        if nuevo_ejemplares != "":
+        nuevo_ejemplares_str = input(
+            "Introduce el nuevo número de ejemplares / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_ejemplares_str != "":
             try:
-                ejemplares_final = int(nuevo_ejemplares)
+                ejemplares_final = int(nuevo_ejemplares_str)
             except ValueError:
-                print("Error: el número de ejemplares debe ser un número entero.")
-                return
+                print("Los ejemplares deben ser un número entero. Se mantiene el valor anterior.")
+
+        nuevo_editorial = input("Introduce la nueva editorial / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_editorial != "":
+            editorial_final = nuevo_editorial
+
+        nuevo_materia = input("Introduce la nueva materia / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_materia != "":
+            materia_final = nuevo_materia
+
+        nuevo_curso = input("Introduce el nuevo curso / Dejar vacío si no se quiere modificar: ").strip()
+        if nuevo_curso != "":
+            curso_final = nuevo_curso
 
         try:
-            libro_temporal: Libro = Libro(libro.isbn, titulo_final, autor_final, ejemplares_final, editorial_final, materia_final, curso_final)
-        except ValueError as error:
-            print("Error al modificar el libro:", error)
+            libro_temp = Libro(libro.isbn, titulo_final, autor_final, ejemplares_final, editorial_final,
+                               materia_final, curso_final)
+        except ValueError as e:
+            print("Error al modificar el libro:", e)
             return
-
-        libro.modificar_datos(titulo_final, autor_final, ejemplares_final, materia_final, curso_final)
 
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
 
-        consulta: str = (
-                "UPDATE libros SET titulo = '" + libro.titulo +
-                "', autor = '" + libro.autor +
-                "', numero_ejemplares = " + str(libro.ejemplares) +
-                ", editorial = '" + libro.editorial +
-                "', id_materia = '" + libro.materia +
-                "', id_curso = '" + libro.curso +
-                "' WHERE isbn = '" + libro.isbn + "'"
-        )
+        update_libro = ("UPDATE libros SET titulo = '" + titulo_final + "', autor = '" + autor_final +
+                "', ejemplares = " + str(ejemplares_final) + ", editorial = '" + editorial_final +
+                "', materia = '" + materia_final + "', curso = '" + curso_final +
+                "' WHERE isbn = '" + libro.isbn + "'")
 
         try:
-            conexion_bd.ejecutar_consulta(consulta)
+            conexion_bd.ejecutar_consulta(update_libro)
             print("El libro se ha modificado correctamente.")
         except:
-            print("No se ha podido modificar el libro en la base de datos.")
-
-        conexion_bd.cerrar()
+            print("Error al modificar el libro en la base de datos.")
+        finally:
+            conexion_bd.cerrar()
