@@ -1,7 +1,7 @@
 from controladores.gestionar_alumnos import GestionarAlumnos
 from controladores.gestionar_libros import  GestionarLibro
 from controladores.gestionar_cursos import GestionarCurso
-from controladores.gestionar_materias import GestionMaterias
+from controladores.gestionar_materias import GestionarMaterias
 from controladores.gestionar_prestamos import GestionarPrestamo
 
 class App:
@@ -24,10 +24,10 @@ class App:
             opcion = input("Elige una opcion: ").strip()
             match opcion:
                 case "1":
-                    crear_alumno()
+                    GestionarAlumnos.crear_alumno()
                 case "2":
                     nie = input("Introduce el numero de identificación escolar del alumno que quieres modificar: ")
-                    modificar_alumno(nie)
+                    GestionarAlumnos.modificar_alumno(nie)
                 case "3":
                     break
                 case _:
@@ -44,10 +44,10 @@ class App:
             opcion = input("Elige una opcion: ").strip()
             match opcion:
                 case "1":
-                    crear_libro()
+                    GestionarLibro.crear_libro()
                 case "2":
                     isbn = input("Introduce el ISBN del libro que quieres modificar: ")
-                    modificar_libro(isbn)
+                    GestionarLibro.modificar_libro(isbn)
                 case "3":
                     break
                 case _:
@@ -64,10 +64,10 @@ class App:
             opcion = input("Elige una opcion: ").strip()
             match opcion:
                 case "1":
-                    crear_materia()
+                    GestionarMaterias.crear_materia()
                 case "2":
                     nombre = input("Introduce el nombre de la materia que quieres modificar: ")
-                    modificar_materia(nombre)
+                    GestionarMaterias.modificar_materia(nombre)
                 case "3":
                     break
                 case _:
@@ -84,10 +84,10 @@ class App:
             opcion = input("Elige una opcion: ").strip()
             match opcion:
                 case "1":
-                    crear_curso()
+                    GestionarCurso.crear_curso()
                 case "2":
                     nombre = input("Introduce el nombre del curso que quieres modificar: ")
-                    modificar_curso(nombre)
+                    GestionarCurso.modificar_curso(nombre)
                 case "3":
                     break
                 case _:
@@ -104,11 +104,11 @@ class App:
             opcion = input("Elige una opcion: ").strip()
             match opcion:
                 case "1":
-                    crear_prestamo()
+                    GestionarPrestamo.crear_prestamo()
                 case "2":
                     nie = input("Introduce el NIE del alumno del préstamo que quieres modificar: ").strip()
                     isbn = input("Introduce el ISBN del libro del préstamo que quieres modificar: ").strip()
-                    modificar_prestamo(nie, isbn)
+                    GestionarPrestamo.modificar_prestamo(nie, isbn)
                 case "3":
                     break
                 case _:

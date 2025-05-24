@@ -1,6 +1,6 @@
 from clases.materia import Materia
 
-class GestionMaterias:
+class GestionarMaterias:
     def crear_materia(self) -> Materia:
         materia: str = ""
         departamento: str = ""
