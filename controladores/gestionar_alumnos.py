@@ -89,7 +89,7 @@ class GestionarAlumnos:
         conexion_bd.conectar_base_de_datos()
 
         mod_alumno = ( "UPDATE alumnos SET nombre = '" + nombre_final +
-            "', apellido = '" + apellidos_final +
+ "', apellido = '" + apellidos_final +
             "', tramo = '" + tramo_final +
             "', bilingue = " + str(bilingue_int) +
             " WHERE nie = '" + alumno.nie + "'")
