@@ -21,8 +21,8 @@ class GestionarCurso:
 
         try:
             curso = Curso(nombre, nivel)
-        except ValueError as e:
-            print("Error al crear el curso:", e)
+        except ValueError as error:
+            print("Error al crear el curso:", error)
             return None
 
         conexion_bd = ConexionBD()
