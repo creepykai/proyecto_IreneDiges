@@ -5,19 +5,18 @@ from controladores.gestionar_materias import crear_materia, modificar_materia
 from controladores.gestionar_prestamos import crear_prestamo, modificar_prestamo
 
 class App:
-    def mostrar_menu(self):
+    def mostrar_menu_principal(self):
         print("MENÚ PRINCIPAL")
-        print("1. Crear alumno")
-        print("2. Modificar alumno")
-        print("3. Crear libro")
-        print("4. Modificar libro")
-        print("5. Crear curso")
-        print("6. Modificar curso")
-        print("7. Crear materia")
-        print("8. Modificar materia")
-        print("9. Crear préstamo")
-        print("10. Modificar préstamo")
-        print("0. Salir")
+        print("1. Gestionar alumnos")
+        print("2. Gestionar libros")
+        print("3. Gestionar materias")
+        print("4. Gestionar cursos")
+        print("5. Gestionar prestamos")
+        print("6. Salir")
+
+    def submenu_alumnos(self):
+        while True:
+            
 
     def obtener_indice(self, lista, mensaje):
         try:
