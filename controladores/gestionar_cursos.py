@@ -45,6 +45,7 @@ class GestionarCurso:
     def modificar_curso(self, curso: Curso) -> None:
         nombre_curso: str = ""
         nuevo_nivel: str = ""
+        nuevo_nombre: str = ""
 
         nombre_final: str = curso.curso
         nivel_final: str = curso.nivel
@@ -59,8 +60,8 @@ class GestionarCurso:
 
         try:
             curso_temporal = Curso(nombre_final, nivel_final)
-        except ValueError as e:
-            print("Error al modificar el curso:", e)
+        except ValueError as error:
+            print("Error al modificar el curso:", error)
             return
 
         conexion_bd = ConexionBD()

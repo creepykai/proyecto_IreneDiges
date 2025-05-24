@@ -26,14 +26,24 @@ class GestionarMaterias:
                 break
             print("El departamento no puede estar vacío y debe tener letras.")
 
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+
+        consulta = "SELECT * FROM materias WHERE nombre = '" + materia_nombre + "'"
+        datos_materia = conexion_bd.obtener_datos(consulta)
+
+        if len(datos_materia) > 0:
+            print("La materia ya existe. No se puede duplicar.")
+            conexion_bd.cerrar()
+            return None
+
         try:
             materia: Materia = Materia(id_materia,materia_nombre, departamento)
         except ValueError as error:
             print("Error al crear la materia", error)
             return None
 
-        conexion_bd = ConexionBD()
-        conexion_bd.conectar_base_de_datos()
+
 
         insertar = (
                 "INSERT INTO materias (id, materia, departamento) "
@@ -66,8 +76,8 @@ class GestionarMaterias:
 
         try:
             materia_temporal = Materia(materia.id, nombre_final, departamento_final)
-        except ValueError as e:
-            print("Error al modificar la materia:", e)
+        except ValueError as error:
+            print("Error al modificar la materia:", error)
             return
 
         conexion_bd = ConexionBD()
