@@ -53,14 +53,14 @@ class GestionarAlumnos:
         bilingue_int = 1 if alumno.bilingue else 0
 
         add_persona = (
-            "INSERT INTO alumnos (nie, nombre, apellido, tramo, bilingue) "
+            "INSERT INTO alumnos (nie, nombre, apellidos, tramo, bilingue) "
             "VALUES ('" + alumno.nie + "', '" + alumno.nombre + "', '" +
             alumno.apellidos + "', '" + alumno.tramo + "', " + str(bilingue_int) + ")")
 
         try:
             conexion_bd.ejecutar_consulta(add_persona)
             print("El alumno se ha creado correctamente.")
-        except:
+        except ValueError as e:
             print("No se ha podido crear el alumno en la base de datos.")
         finally:
             conexion_bd.cerrar()
@@ -119,7 +119,7 @@ class GestionarAlumnos:
 
         mod_alumno = (
             "UPDATE alumnos SET nombre = '" + nombre_final +
-            "', apellido = '" + apellidos_final +
+            "', apellidos = '" + apellidos_final +
             "', tramo = '" + tramo_final +
             "', bilingue = " + str(bilingue_int) +
             " WHERE nie = '" + alumno.nie + "'"

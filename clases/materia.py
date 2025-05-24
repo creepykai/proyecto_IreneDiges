@@ -1,7 +1,12 @@
 class Materia:
-    def __init__(self, materia: str, departamento: str):
+    def __init__(self,id : int, materia: str, departamento: str):
+        self.id = id
         self.materia = materia
         self.departamento = departamento
+
+    @property
+    def id(self) -> int:
+        return self._id
 
     @property
     def materia(self) -> str:
@@ -27,7 +32,8 @@ class Materia:
 
     def validar_datos_materia(self) -> bool:
         try:
-            self.materia = self.materia  # Llama al setter para validar
+            self.id = int(self.id)
+            self.materia = self.materia
             self.departamento = self.departamento
             return True
         except ValueError as error:

@@ -12,21 +12,54 @@ class GestionarLibro:
         materia: str = ""
         curso: str = ""
 
-        isbn = input("Introduce el ISBN del libro (13 dígitos): ").strip()
-        titulo = input("Introduce el título del libro: ").strip()
-        autor = input("Introduce el autor del libro: ").strip()
-        ejemplares_str = input("Introduce el ejemplar del libro: ").strip()
-        editorial = input("Introduce la editorial: ").strip()
-        materia = input("Introduce la materia: ").strip()
-        curso = input("Introduce el curso: ").strip()
+        while True:
+            isbn = input("Introduce el ISBN del libro (13 dígitos): ").strip()
+            if len(isbn) == 13 and isbn.isdigit():
+                break
+            print("El ISBN debe tener exactamente 13 dígitos numéricos.")
+
+        while True:
+            titulo = input("Introduce el título del libro: ").strip()
+            if titulo != "" and any(c.isalpha() for c in titulo):
+                break
+            print("El título no puede estar vacío y debe tener letras.")
+
+        while True:
+            autor = input("Introduce el autor del libro: ").strip()
+            if autor != "" and any(c.isalpha() for c in autor):
+                break
+            print("El autor no puede estar vacío y debe tener letras.")
+
+        while True:
+            ejemplares_str = input("Introduce la cantidad de ejemplares: ").strip()
+            if ejemplares_str.isdigit() and int(ejemplares_str) > 0:
+                ejemplares = int(ejemplares_str)
+                break
+            print("Los ejemplares deben ser un número entero mayor que cero.")
+
+        while True:
+            editorial = input("Introduce la editorial: ").strip()
+            if editorial != "" and any(c.isalpha() for c in editorial):
+                break
+            print("La editorial no puede estar vacía y debe tener letras.")
+
+        while True:
+            materia = input("Introduce la materia: ").strip()
+            if materia != "" and any(c.isalpha() for c in materia):
+                break
+            print("La materia no puede estar vacía y debe tener letras.")
+
+        while True:
+            curso = input("Introduce el curso: ").strip()
+            if curso != "" and any(c.isalpha() for c in curso):
+                break
+            print("El curso no puede estar vacío y debe tener letras.")
 
         try:
-            ejemplares: int = int(ejemplares_str)
-        except ValueError:
-            print("El número de ejemplares debe ser un número entero.")
+            libro = Libro(isbn, titulo, autor, ejemplares, editorial, materia, curso)
+        except ValueError as e:
+            print("Error al crear el libro:", e)
             return None
-
-        libro: Libro = Libro(isbn, titulo, autor, ejemplares, editorial, materia, curso)
 
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()

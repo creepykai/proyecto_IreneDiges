@@ -1,39 +1,87 @@
+from conexion_bd import ConexionBD
 from clases.materia import Materia
 
 class GestionarMaterias:
     def crear_materia(self) -> Materia:
-        materia: str = ""
+        id_str: str = ""
+        materia_nombre: str = ""
         departamento: str = ""
 
-        materia = input("Introduce el nombre de la materia: ").strip()
-        departamento = input("Introduce el departamento al que pertenece: ").strip()
+        while True:
+            id_str = input("Introduce el ID de la materia (número entero): ").strip()
+            if id_str.isdigit() and int(id_str) > 0:
+                id_materia = int(id_str)
+                break
+            print("El ID debe ser un número entero positivo.")
 
-        materia_objeto: Materia = Materia(materia, departamento)
+        while True:
+            materia = input("Introduce el nombre de la materia: ").strip()
+            if materia != "" and any(c.isalpha() for c in materia):
+                break
+            print("La materia no puede estar vacía y debe tener letras.")
 
-        if materia_objeto.validar_datos_materia():
-            print("La materia se ha creado correctamente.")
-            return materia_objeto
-        else:
-            print("No se ha podido crear la materia. Revisa los datos introducidos.")
+        while True:
+            departamento = input("Introduce el departamento: ").strip()
+            if departamento != "" and any(c.isalpha() for c in departamento):
+                break
+            print("El departamento no puede estar vacío y debe tener letras.")
+
+        try:
+            materia: Materia = Materia(id_materia,materia_nombre, departamento)
+        except ValueError as error:
+            print("Error al crear la materia", error)
             return None
 
-    def modificar_materia(self, materia_objeto: Materia) -> None:
-        nueva_materia: str = ""
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+
+        insertar = (
+                "INSERT INTO materias (id, materia, departamento) "
+                "VALUES ('" + materia.id + "', '" + materia.materia + "', '" + materia.departamento + "')")
+
+        try:
+            conexion_bd.ejecutar_consulta(insertar)
+            print("Materia creada con exito")
+        except:
+            print("No se ha podido guardar la materia en la BDD")
+
+        conexion_bd.cerrar()
+        return materia
+
+    def modificar_materia(self, materia: Materia) -> None:
+        nuevo_nombre: str = ""
         nuevo_departamento: str = ""
-        materia_final: str = ""
+        nombre_final: str = ""
         departamento_final: str = ""
 
-        nueva_materia = input("Introduce el nuevo nombre de la materia / Dejar vacío si no se quiere modificar: ").strip()
+        nuevo_nombre = input("Introduce el nuevo nombre de la materia / Dejar vacío si no se quiere modificar: ").strip()
         nuevo_departamento = input("Introduce el nuevo departamento / Dejar vacío si no se quiere modificar: ").strip()
 
-        materia_final = materia_objeto.materia if nueva_materia == "" else nueva_materia
-        departamento_final = materia_objeto.departamento if nuevo_departamento == "" else nuevo_departamento
+        nombre_final = materia.materia if nuevo_nombre == "" else nuevo_nombre
+        departamento_final = materia.departamento if nuevo_departamento == "" else nuevo_departamento
 
-        materia_temporal: Materia = Materia(materia_final, departamento_final)
+        try:
+            materia_temp = Materia(materia.id, nombre_final, departamento_final)
+        except ValueError as error:
+            print("Error al modificar la materia:", error)
+            return
 
-        if materia_temporal.validar_datos_materia():
-            materia_objeto.materia = materia_final
-            materia_objeto.departamento = departamento_final
+        materia.materia = materia_temp.materia
+        materia.departamento = materia_temp.departamento
+
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+
+        update = (
+                "UPDATE materias SET materia = '" + materia.materia +
+                "', departamento = '" + materia.departamento +
+                "' WHERE id = " + str(materia.id)
+        )
+
+        try:
+            conexion_bd.ejecutar_consulta(update)
             print("La materia se ha modificado correctamente.")
-        else:
-            print("No se han guardado los cambios porque los datos no son válidos.")
+        except:
+            print("No se pudo modificar la materia en la base de datos.")
+
+        conexion_bd.cerrar()

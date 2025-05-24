@@ -28,91 +28,71 @@ class GestionarPrestamo:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
 
-        nie = input("Introduce el NIE del alumno: ").strip().upper()
-        consulta_alumno = "SELECT * FROM alumnos WHERE nie = '" + nie + "'"
-        datos_alumno = conexion_bd.obtener_datos(consulta_alumno)
+        while True:
+            nie = input("Introduce el NIE del alumno: ").strip().upper()
+            consulta = "SELECT * FROM alumnos WHERE nie = '" + nie + "'"
+            datos_alumno = conexion_bd.obtener_datos(consulta)
+            if datos_alumno:
+                datos = datos_alumno[0]
+                bilingue = True if datos[4] == 1 else False
+                alumno = Alumno(datos[0], datos[1], datos[2], datos[3], bilingue)
+                break
+            print("El NIE no existe. Por favor, verifica los datos.")
 
-        if len(datos_alumno) == 0:
-            print("El alumno no existe ¿Quieres crearlo?")
-            respuesta = input("s/n: ").strip().lower()
-            if respuesta == "s":
-                alumno = gestion_alumnos.crear_alumno()
-            else:
-                print("No se puede continuar sin un alumno.")
-                conexion_bd.cerrar()
-                return None
-        else:
-            datos = datos_alumno[0]
-            bilingue = True if datos[4] == 1 else False
-            alumno = Alumno(datos[0], datos[1], datos[2], datos[3], bilingue)
+        while True:
+            isbn = input("Introduce el ISBN del libro: ").strip()
+            consulta = "SELECT * FROM libros WHERE isbn = '" + isbn + "'"
+            datos_libro = conexion_bd.obtener_datos(consulta)
+            if datos_libro:
+                datos = datos_libro[0]
+                libro = Libro(datos[0], datos[1], datos[2], int(datos[3]), datos[4], datos[5], datos[6])
+                break
+            print("El ISBN no existe. Por favor, verifica los datos.")
 
-        isbn = input("Introduce el ISBN del libro: ").strip()
-        consulta_libro = "SELECT * FROM libros WHERE isbn = '" + isbn + "'"
-        datos_libro = conexion_bd.obtener_datos(consulta_libro)
+        while True:
+            curso_nombre = input("Introduce el curso del alumno: ").strip()
+            consulta = "SELECT * FROM cursos WHERE nombre = '" + curso_nombre + "'"
+            datos_curso = conexion_bd.obtener_datos(consulta)
+            if datos_curso:
+                datos = datos_curso[0]
+                curso = Curso(datos[0], datos[1])
+                break
+            print("El curso no existe. Por favor, verifica los datos.")
 
-        if len(datos_libro) == 0:
-            print("El libro no existe ¿Quieres crearlo?")
-            respuesta = input("s/n: ").strip().lower()
-            if respuesta == "s":
-                libro = gestion_libros.crear_libro()
-            else:
-                print("No se puede continuar sin un libro.")
-                conexion_bd.cerrar()
-                return None
-        else:
-            datos = datos_libro[0]
-            libro = Libro(datos[0], datos[1], datos[2], datos[3], "", datos[4], datos[5])
+        while True:
+            fecha_entrega = input("Introduce la fecha de entrega (AAAA-MM-DD): ").strip()
+            if Prestamo.validar_fecha(fecha_entrega, "fecha de entrega"):
+                break
+            print("La fecha no tiene el formato correcto.")
 
-        curso_nombre = input("Introduce el curso del alumno: ").strip()
-        consulta_curso = "SELECT * FROM cursos WHERE nombre = '" + curso_nombre + "'"
-        datos_curso = conexion_bd.obtener_datos(consulta_curso)
-
-        if len(datos_curso) == 0:
-            print("El curso no existe ¿Quieres crearlo?")
-            respuesta = input("s/n: ").strip().lower()
-            if respuesta == "s":
-                curso = gestion_curso.crear_curso()
-            else:
-                print("No se puede continuar sin un curso.")
-                conexion_bd.cerrar()
-                return None
-        else:
-            datos = datos_curso[0]
-            curso = Curso(datos[0], datos[1])
-
-        fecha_entrega = input("Introduce la fecha de entrega (AAAA-MM-DD): ").strip()
-        estado = input("Introduce el estado del alumno (P = prestado o D = devuelto): ").strip().upper()
+        while True:
+            estado = input("Introduce el estado (P = Prestado, D = Devuelto): ").strip().upper()
+            if estado in ["P", "D"]:
+                break
+            print("El estado debe ser 'P' o 'D'.")
 
         if estado == "D":
-            fecha_devolucion = input("Introduce la fecha de devolución (AAAA-MM-DD): ").strip()
-        else:
-            fecha_devolucion = ""
+            while True:
+                fecha_devolucion = input("Introduce la fecha de devolución (AAAA-MM-DD): ").strip()
+                if Prestamo.validar_fecha(fecha_devolucion, "fecha de devolución"):
+                    break
+                print("La fecha no tiene el formato correcto.")
 
         prestamo = Prestamo(alumno, libro, curso, fecha_entrega, estado, fecha_devolucion)
 
         if prestamo.validar_datos_prestamo():
-            if fecha_devolucion.strip() == "":
-                fecha_devolucion_sql = "NULL"
-            else:
-                fecha_devolucion_sql = "'" + fecha_devolucion + "'"
-
-            insert_prestamo = ("INSERT INTO alumnoscrusoslibros (nie, curso, isbn, fecha_entrega, fecha_devolucion, estado) VALUES ('"
-                        + alumno.nie + "', '" + curso.curso + "', '" + libro.isbn + "', '"
-                        + fecha_entrega + "', " + fecha_devolucion_sql + ", '" + estado + "')")
-
+            insert_prestamo = ("INSERT INTO alumnoscursoslibros (nie, curso, isbn, fecha_entrega, fecha_devolucion, estado) "
+                    "VALUES ('" + alumno.nie + "', '" + curso.curso + "', '" + libro.isbn + "', '" + fecha_entrega + "', '" + fecha_devolucion + "', '" + estado + "')")
             try:
                 conexion_bd.ejecutar_consulta(insert_prestamo)
                 print("El préstamo se ha guardado correctamente.")
-            except:
-                print("No se ha podido guardar el préstamo en la base de datos.")
-
-            conexion_bd.cerrar()
-            return prestamo
-
+            except Exception as e:
+                print("No se ha podido guardar el préstamo en la base de datos:", e)
         else:
-            print("No se ha podido crear el préstamo.")
-            conexion_bd.cerrar()
-            return None
+            print("No se ha podido crear el préstamo: datos inválidos.")
+
+        conexion_bd.cerrar()
+        return prestamo
 
     def modificar_prestamo(self, prestamo: Prestamo) -> None:
         nuevo_curso: str = ""
