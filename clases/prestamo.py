@@ -58,8 +58,11 @@ class Prestamo:
 
     @fecha_devolucion.setter
     def fecha_devolucion(self, valor: str) -> None:
+        if valor is None:
+            self._fecha_devolucion = None
+            return
         if valor.strip() != "" and not Prestamo.validar_fecha(valor, "fecha de devolución"):
-            raise ValueError("Fecha de devolución no válida.")
+            raise ValueError("La fecha de devolución no es válida.")
         self._fecha_devolucion = valor
 
     @property
@@ -111,11 +114,13 @@ class Prestamo:
             return False
 
     def __str__(self) -> str:
-        estado_str: str = "Prestado" if self.estado == "P" else "Devuelto"
-
-        return f"Alumno: {self.alumno.nombre} {self.alumno.apellidos} Libro: {self.libro.titulo} Curso: {self.curso} Fecha entrega: {self.fecha_entrega} Fecha devolución: {self.fecha_devolucion} Estado: {estado_str}"
-
-
+        estado_legible = "Prestado" if self.estado == "P" else "Devuelto"
+        return (f"Alumno: {self.alumno.nombre} {self.alumno.apellidos} "
+                f"Libro: {self.libro.titulo} "
+                f"Curso: {self.curso.curso}, Nivel: {self.curso.nivel} "
+                f"Fecha entrega: {self.fecha_entrega} "
+                f"Fecha devolución: {self.fecha_devolucion} "
+                f"Estado: {estado_legible}")
 
 
 

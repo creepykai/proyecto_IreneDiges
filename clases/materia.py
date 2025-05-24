@@ -8,6 +8,12 @@ class Materia:
     def id(self) -> int:
         return self._id
 
+    @id.setter
+    def id(self, valor: int) -> None:
+        if not isinstance(valor, int) or valor < 0:
+            raise ValueError("El id debe ser un número entero positivo.")
+        self._id = valor
+
     @property
     def materia(self) -> str:
         return self._materia
