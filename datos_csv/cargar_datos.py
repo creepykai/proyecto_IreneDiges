@@ -4,7 +4,7 @@ from clases.materia import Materia
 from clases.curso import Curso
 from conexion_bd import ConexionBD
 
-def cargar_materias_desde_csv(ruta_csv):
+def cargar_materias_desde_csv(ruta_csv) -> None:
     conexion = ConexionBD()
     conexion.conectar_base_de_datos()
     try:
@@ -23,7 +23,7 @@ def cargar_materias_desde_csv(ruta_csv):
     finally:
         conexion.cerrar()
 
-def cargar_cursos_desde_csv(ruta_csv):
+def cargar_cursos_desde_csv(ruta_csv) -> None:
     conexion = ConexionBD()
     conexion.conectar_base_de_datos()
     try:
@@ -42,7 +42,7 @@ def cargar_cursos_desde_csv(ruta_csv):
     finally:
         conexion.cerrar()
 
-def cargar_libros_desde_csv(ruta_csv):
+def cargar_libros_desde_csv(ruta_csv) -> None:
     conexion = ConexionBD()
     conexion.conectar_base_de_datos()
     try:
@@ -70,7 +70,7 @@ def cargar_libros_desde_csv(ruta_csv):
     finally:
         conexion.cerrar()
 
-def cargar_alumnos_desde_csv(ruta_csv):
+def cargar_alumnos_desde_csv(ruta_csv) -> None:
     conexion = ConexionBD()
     conexion.conectar_base_de_datos()
     try:
@@ -98,7 +98,7 @@ def cargar_alumnos_desde_csv(ruta_csv):
     finally:
         conexion.cerrar()
 
-def cargar_prestamos_desde_csv(ruta_csv):
+def cargar_prestamos_desde_csv(ruta_csv) -> None:
     conexion = ConexionBD()
     conexion.conectar_base_de_datos()
     try:

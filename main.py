@@ -11,7 +11,7 @@ from datos_csv.cargar_datos import (
     cargar_prestamos_desde_csv
 )
 
-def login_simple():
+def login() -> bool:
     intentos = 3
     while intentos > 0:
         usuario = input("Usuario: ").strip()
@@ -26,7 +26,7 @@ def login_simple():
     return False
 
 class App:
-    def mostrar_menu_principal(self):
+    def mostrar_menu_principal(self) -> None:
         print("MENÚ PRINCIPAL")
         print("1. Gestionar alumnos")
         print("2. Gestionar libros")
@@ -36,7 +36,7 @@ class App:
         print("6. Salir")
         print("7. Cargar datos desde CSV")
 
-    def submenu_alumnos(self):
+    def submenu_alumnos(self) -> None:
         gestor = GestionarAlumnos()
         while True:
             print("SUBMENÚ ALUMNOS")
@@ -70,7 +70,7 @@ class App:
                 case _:
                     print("Opción inválida")
 
-    def submenu_libros(self):
+    def submenu_libros(self) -> None:
         gestor = GestionarLibro()
         while True:
             print("SUBMENÚ LIBROS")
@@ -104,7 +104,7 @@ class App:
                 case _:
                     print("Opción inválida")
 
-    def submenu_materias(self):
+    def submenu_materias(self) -> None:
         gestor = GestionarMaterias()
         while True:
             print("SUBMENÚ MATERIAS")
@@ -134,7 +134,7 @@ class App:
                 case _:
                     print("Opción inválida")
 
-    def submenu_cursos(self):
+    def submenu_cursos(self) -> None:
         gestor = GestionarCurso()
         while True:
             print("SUBMENÚ CURSOS")
@@ -164,7 +164,7 @@ class App:
                 case _:
                     print("Opción inválida")
 
-    def submenu_prestamos(self):
+    def submenu_prestamos(self) -> None:
         gestor = GestionarPrestamo()
         while True:
             print("SUBMENÚ PRÉSTAMOS")
@@ -201,7 +201,7 @@ class App:
                 case _:
                     print("Opción inválida")
 
-    def main(self):
+    def main(self) -> None:
         while True:
             self.mostrar_menu_principal()
             opcion = input("Elige una opción: ").strip()
@@ -230,6 +230,6 @@ class App:
                     print("Opción inválida")
 
 if __name__ == "__main__":
-    if login_simple():
+    if login():
         app = App()
         app.main()

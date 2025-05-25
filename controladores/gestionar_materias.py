@@ -72,7 +72,7 @@ class GestionarMaterias:
     def buscar_materias_por_departamento(self, departamento):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM materias WHERE departamento LIKE '%" + departamento + "%'"
+        consulta = "SELECT * FROM materias WHERE departamento LIKE '" + departamento + "'"
         resultados = conexion_bd.obtener_datos(consulta)
         if resultados:
             for fila in resultados:
@@ -93,7 +93,7 @@ class GestionarMaterias:
             print("No hay materias registradas")
         conexion_bd.cerrar()
 
-    def modificar_materia(self, nombre):
+    def modificar_materia(self, nombre) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM materias WHERE nombre = '" + nombre + "'"

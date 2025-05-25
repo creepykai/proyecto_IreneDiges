@@ -93,7 +93,7 @@ class GestionarPrestamo:
         conexion_bd.cerrar()
         return prestamo
 
-    def buscar_prestamo_por_nie_isbn(self, nie, isbn):
+    def buscar_prestamo_por_nie_isbn(self, nie, isbn) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM alumnoscursoslibros WHERE nie = '" + nie + "' AND isbn = '" + isbn + "'"
@@ -105,7 +105,7 @@ class GestionarPrestamo:
             print("Préstamo no encontrado")
         conexion_bd.cerrar()
 
-    def buscar_prestamos_por_estado(self, estado):
+    def buscar_prestamos_por_estado(self, estado) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM alumnoscursoslibros WHERE estado = '" + estado + "'"
@@ -117,7 +117,7 @@ class GestionarPrestamo:
             print("No se encontraron préstamos")
         conexion_bd.cerrar()
 
-    def listar_todos(self):
+    def listar_todos(self) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM alumnoscursoslibros"

@@ -41,7 +41,7 @@ class GestionarCurso:
 
         return curso
 
-    def buscar_curso_por_nombre(self, nombre):
+    def buscar_curso_por_nombre(self, nombre) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM cursos WHERE nombre LIKE '" + nombre + "'"
@@ -53,7 +53,7 @@ class GestionarCurso:
             print("No se encontraron cursos")
         conexion_bd.cerrar()
 
-    def buscar_cursos_por_nivel(self, nivel):
+    def buscar_cursos_por_nivel(self, nivel) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM cursos WHERE nivel LIKE '" + nivel + "'"
@@ -65,7 +65,7 @@ class GestionarCurso:
             print("No se encontraron cursos")
         conexion_bd.cerrar()
 
-    def listar_todos(self):
+    def listar_todos(self) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM cursos"
@@ -77,7 +77,7 @@ class GestionarCurso:
             print("No hay cursos registrados")
         conexion_bd.cerrar()
 
-    def modificar_curso(self, nombre):
+    def modificar_curso(self, nombre) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM cursos WHERE nombre = '" + nombre + "'"

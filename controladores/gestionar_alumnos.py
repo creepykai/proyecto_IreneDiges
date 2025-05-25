@@ -43,8 +43,8 @@ class GestionarAlumnos:
 
         try:
             alumno = Alumno(nie, nombre, apellido, tramo, bilingue)
-        except ValueError as e:
-            print("Error al crear el alumno:", e)
+        except ValueError as error:
+            print("Error al crear el alumno:", error)
             return None
 
         conexion_bd = ConexionBD()
@@ -52,10 +52,8 @@ class GestionarAlumnos:
 
         bilingue_int = 1 if alumno.bilingue else 0
 
-        add_persona = (
-            "INSERT INTO alumnos (nie, nombre, apellidos, tramo, bilingue) "
-            "VALUES ('" + alumno.nie + "', '" + alumno.nombre + "', '" +
-            alumno.apellidos + "', '" + alumno.tramo + "', " + str(bilingue_int) + ")")
+        add_persona = ("INSERT INTO alumnos (nie, nombre, apellidos, tramo, bilingue) "
+            "VALUES ('" + alumno.nie + "', '" + alumno.nombre + "', '" + alumno.apellidos + "', '" + alumno.tramo + "', " + str(bilingue_int) + ")")
 
         try:
             conexion_bd.ejecutar_consulta(add_persona)
@@ -67,7 +65,7 @@ class GestionarAlumnos:
 
         return alumno
 
-    def buscar_alumno_por_nie(self, nie):
+    def buscar_alumno_por_nie(self, nie) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM alumnos WHERE nie = '" + nie + "'"
@@ -79,10 +77,10 @@ class GestionarAlumnos:
             print("Alumno no encontrado")
         conexion_bd.cerrar()
 
-    def buscar_alumnos_por_nombre(self, nombre):
+    def buscar_alumnos_por_nombre(self, nombre) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM alumnos WHERE nombre LIKE '%" + nombre + "%'"
+        consulta = "SELECT * FROM alumnos WHERE nombre LIKE '" + nombre + "'"
         resultados = conexion_bd.obtener_datos(consulta)
         if resultados:
             for fila in resultados:
@@ -105,7 +103,7 @@ class GestionarAlumnos:
             print("No se encontraron alumnos")
         conexion_bd.cerrar()
 
-    def listar_todos(self):
+    def listar_todos(self) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM alumnos"
@@ -118,7 +116,7 @@ class GestionarAlumnos:
             print("No hay alumnos registrados")
         conexion_bd.cerrar()
 
-    def modificar_alumno(self, nie):
+    def modificar_alumno(self, nie) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM alumnos WHERE nie = '" + nie + "'"
@@ -149,8 +147,8 @@ class GestionarAlumnos:
 
             bilingue_int = 1 if bilingue_final else 0
 
-            consulta_update = "UPDATE alumnos SET nombre = '" + nombre_final + "', apellidos = '" + apellidos_final + "', tramo = '" + tramo_final + "', bilingue = " + str(
-                bilingue_int) + " WHERE nie = '" + nie + "'"
+            consulta_update = ("UPDATE alumnos SET nombre = '" + nombre_final + "', apellidos = '" + apellidos_final + "', tramo = '" + tramo_final + "', bilingue = " +
+                               str(bilingue_int) + " WHERE nie = '" + nie + "'")
 
             try:
                 conexion_bd.ejecutar_consulta(consulta_update)

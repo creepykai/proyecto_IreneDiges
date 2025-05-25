@@ -43,7 +43,7 @@ class GestionarLibro:
             print("La materia no puede estar vacía.")
 
         while True:
-            curso = input("Introduce el curso (id) (1ESO, 2ESO -> sin º): ").strip()
+            curso = input("Introduce el curso (id) (1ESO, 2ESO, etc. -> sin º): ").strip()
             if curso != "":
                 break
             print("El curso no puede estar vacío.")
@@ -70,7 +70,7 @@ class GestionarLibro:
         conexion_bd.cerrar()
         return libro
 
-    def buscar_libro_por_isbn(self, isbn):
+    def buscar_libro_por_isbn(self, isbn) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM libros WHERE isbn = '" + isbn + "'"
@@ -94,7 +94,7 @@ class GestionarLibro:
             print("No se encontraron libros")
         conexion_bd.cerrar()
 
-    def buscar_libros_por_materia(self, materia):
+    def buscar_libros_por_materia(self, materia) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM libros WHERE id_materia LIKE '%" + materia + "%'"
@@ -106,7 +106,7 @@ class GestionarLibro:
             print("No se encontraron libros")
         conexion_bd.cerrar()
 
-    def listar_todos(self):
+    def listar_todos(self) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM libros"
@@ -118,7 +118,7 @@ class GestionarLibro:
             print("No hay libros registrados")
         conexion_bd.cerrar()
 
-    def modificar_libro(self, isbn):
+    def modificar_libro(self, isbn) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
         consulta = "SELECT * FROM libros WHERE isbn = '" + isbn + "'"
@@ -152,8 +152,8 @@ class GestionarLibro:
             if nuevo_curso != "":
                 curso_final = nuevo_curso
 
-            consulta_update = "UPDATE libros SET titulo = '" + titulo_final + "', autor = '" + autor_final + "', numero_ejemplares = " + str(
-                ejemplares_final) + ", id_materia = '" + materia_final + "', id_curso = '" + curso_final + "' WHERE isbn = '" + isbn + "'"
+            consulta_update = ("UPDATE libros SET titulo = '" + titulo_final + "', autor = '" + autor_final + "', numero_ejemplares = " + str(ejemplares_final) +
+                               ", id_materia = '" + materia_final + "', id_curso = '" + curso_final + "' WHERE isbn = '" + isbn + "'")
 
             try:
                 conexion_bd.ejecutar_consulta(consulta_update)
