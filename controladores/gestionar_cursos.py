@@ -41,39 +41,69 @@ class GestionarCurso:
 
         return curso
 
-
-    def modificar_curso(self, curso: Curso) -> None:
-        nombre_curso: str = ""
-        nuevo_nivel: str = ""
-        nuevo_nombre: str = ""
-
-        nombre_final: str = curso.curso
-        nivel_final: str = curso.nivel
-
-        nuevo_nombre = input("Introduce el nuevo nombre del curso / Dejar vacío si no se quiere modificar: ").strip()
-        if nuevo_nombre != "":
-            nombre_final = nuevo_nombre
-
-        nuevo_nivel = input("Introduce el nuevo nivel del curso / Dejar vacío si no se quiere modificar: ").strip()
-        if nuevo_nivel != "":
-            nivel_final = nuevo_nivel
-
-        try:
-            curso_temporal = Curso(nombre_final, nivel_final)
-        except ValueError as error:
-            print("Error al modificar el curso:", error)
-            return
-
+    def buscar_curso_por_nombre(self, nombre):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM cursos WHERE nombre LIKE '" + nombre + "'"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("Nombre:", fila[0], "Nivel:", fila[1])
+        else:
+            print("No se encontraron cursos")
+        conexion_bd.cerrar()
 
-        update_curso = ("UPDATE cursos SET nombre = '" + nombre_final + "', nivel = '" + nivel_final +
-                "' WHERE nombre = '" + curso.curso + "'")
+    def buscar_cursos_por_nivel(self, nivel):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM cursos WHERE nivel LIKE '" + nivel + "'"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("Nombre:", fila[0], "Nivel:", fila[1])
+        else:
+            print("No se encontraron cursos")
+        conexion_bd.cerrar()
 
-        try:
-            conexion_bd.ejecutar_consulta(update_curso)
-            print("El curso se ha modificado correctamente.")
-        except ValueError as error:
-            print("Error al modificar el curso en la base de datos. Error:", error )
-        finally:
-            conexion_bd.cerrar()
+    def listar_todos(self):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM cursos"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("Nombre:", fila[0], "Nivel:", fila[1])
+        else:
+            print("No hay cursos registrados")
+        conexion_bd.cerrar()
+
+    def modificar_curso(self, nombre):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM cursos WHERE nombre = '" + nombre + "'"
+        resultado = conexion_bd.obtener_datos(consulta)
+        if resultado:
+            fila = resultado[0]
+            print("Nombre:", fila[0], "Nivel:", fila[1])
+            nombre_final = fila[0]
+            nivel_final = fila[1]
+
+            nuevo_nombre = input("Nuevo nombre / Dejar vacío si no se modifica: ").strip()
+            if nuevo_nombre != "":
+                nombre_final = nuevo_nombre
+
+            nuevo_nivel = input("Nuevo nivel / Dejar vacío si no se modifica: ").strip()
+            if nuevo_nivel != "":
+                nivel_final = nuevo_nivel
+
+            consulta_update = "UPDATE cursos SET nombre = '" + nombre_final + "', nivel = '" + nivel_final + "' WHERE nombre = '" + nombre + "'"
+
+            try:
+                conexion_bd.ejecutar_consulta(consulta_update)
+                print("El curso se ha modificado correctamente.")
+            except:
+                print("Error al modificar el curso en la base de datos.")
+        else:
+            print("Curso no encontrado")
+        conexion_bd.cerrar()
+

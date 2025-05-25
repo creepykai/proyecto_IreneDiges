@@ -2,7 +2,6 @@ import unittest
 from clases.alumno import Alumno
 
 class TestAlumno(unittest.TestCase):
-
     def test_crear_alumno_valido(self):
         alumno = Alumno("03556632D", "Manuel", "Sánchez", "I", False)
         self.assertEqual(alumno.nie, "03556632D")

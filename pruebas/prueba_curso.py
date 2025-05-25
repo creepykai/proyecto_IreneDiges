@@ -2,7 +2,6 @@ import unittest
 from clases.curso import Curso
 
 class TestCurso(unittest.TestCase):
-
     def test_crear_curso_valido(self):
         curso = Curso("3ºESO", "ESO")
         self.assertEqual(curso.curso, "3ºESO")
@@ -27,3 +26,13 @@ class TestCurso(unittest.TestCase):
     def test_str(self):
         curso = Curso("3ºESO", "ESO")
         self.assertEqual(str(curso), "Curso: 3ºESO, Nivel: ESO")
+
+    def test_set_curso_invalido(self):
+        curso = Curso("1ºESO", "ESO")
+        with self.assertRaises(ValueError):
+            curso.curso = "12345"
+        with self.assertRaises(ValueError):
+            curso.nivel = "1234"
+
+if __name__ == "__main__":
+    unittest.main()

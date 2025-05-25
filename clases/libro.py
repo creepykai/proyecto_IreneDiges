@@ -1,10 +1,9 @@
 class Libro:
-    def __init__(self, isbn: str, titulo: str, autor: str, ejemplares: int, editorial: str, materia: str, curso: str):
+    def __init__(self, isbn: str, titulo: str, autor: str, ejemplares: int, materia: str, curso: str):
         self.isbn = isbn
         self.titulo = titulo
         self.autor = autor
         self.ejemplares = ejemplares
-        self.editorial = editorial
         self.materia = materia
         self.curso = curso
 
@@ -42,6 +41,7 @@ class Libro:
         if valor == "" or not Libro.contiene_letras(valor):
             raise ValueError("El autor no puede estar vacío y debe contener letras.")
         self._autor = valor
+
     @property
     def ejemplares(self) -> int:
         return self._ejemplares
@@ -53,25 +53,14 @@ class Libro:
         self._ejemplares = valor
 
     @property
-    def editorial(self) -> str:
-        return self._editorial
-
-    @editorial.setter
-    def editorial(self, valor: str) -> None:
-        valor = valor.strip()
-        if valor == "" or not Libro.contiene_letras(valor):
-            raise ValueError("La editorial no puede estar vacía y debe contener letras.")
-        self._editorial = valor
-
-    @property
     def materia(self) -> str:
         return self._materia
 
     @materia.setter
     def materia(self, valor: str) -> None:
         valor = valor.strip()
-        if valor == "" or not Libro.contiene_letras(valor):
-            raise ValueError("La materia no puede estar vacía y debe contener letras.")
+        if valor == "":
+            raise ValueError("La materia no puede estar vacía.")
         self._materia = valor
 
     @property
@@ -81,28 +70,25 @@ class Libro:
     @curso.setter
     def curso(self, valor: str) -> None:
         valor = valor.strip()
-        if valor == "" or not Libro.contiene_letras(valor):
-            raise ValueError("El curso no puede estar vacío y debe contener letras.")
+        if valor == "":
+            raise ValueError("El curso no puede estar vacío.")
         self._curso = valor
 
     @staticmethod
     def contiene_letras(texto: str) -> bool:
         return any(caracter.isalpha() for caracter in texto)
 
-    def modificar_datos(self, titulo=None, autor=None, ejemplares=None, editorial=None, materia=None, curso=None) -> None:
+    def modificar_datos(self, titulo=None, autor=None, ejemplares=None, materia=None, curso=None) -> None:
         if titulo is not None:
             self.titulo = titulo
         if autor is not None:
             self.autor = autor
         if ejemplares is not None:
             self.ejemplares = ejemplares
-        if editorial is not None:
-            self.editorial = editorial
         if materia is not None:
             self.materia = materia
         if curso is not None:
             self.curso = curso
 
     def __str__(self):
-        return f"ISBN: {self.isbn} Título: {self.titulo} Autor: {self.autor} Ejemplares: {self.ejemplares} Editorial: {self.editorial} Materia: {self.materia} Curso: {self.curso}"
-
+        return f"ISBN: {self.isbn} Título: {self.titulo} Autor: {self.autor} Ejemplares: {self.ejemplares} Materia: {self.materia} Curso: {self.curso}"

@@ -2,7 +2,6 @@ import unittest
 from clases.materia import Materia
 
 class TestMateria(unittest.TestCase):
-
     def test_crear_materia_valida(self):
         materia = Materia(1, "Historia", "Ciencias Sociales")
         self.assertEqual(materia.id, 1)
@@ -22,5 +21,12 @@ class TestMateria(unittest.TestCase):
         esperado = "Materia: Inglés Departamento: Idiomas"
         self.assertEqual(str(materia), esperado)
 
-if __name__ == '__main__':
+    def test_set_materia_invalido(self):
+        materia = Materia(1, "Historia", "Ciencias Sociales")
+        with self.assertRaises(ValueError):
+            materia.materia = ""
+        with self.assertRaises(ValueError):
+            materia.departamento = ""
+
+if __name__ == "__main__":
     unittest.main()

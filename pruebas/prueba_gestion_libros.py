@@ -1,5 +1,6 @@
 import unittest
 from clases.libro import Libro
+from controladores.gestionar_libros import GestionarLibro
 
 class TestLibro(unittest.TestCase):
     def test_crear_libro_valido(self):

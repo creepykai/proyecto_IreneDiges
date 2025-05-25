@@ -45,8 +45,7 @@ class GestionarMaterias:
 
 
 
-        insertar = (
-                "INSERT INTO materias (id, materia, departamento) "
+        insertar = ("INSERT INTO materias (id, materia, departamento) "
                 "VALUES ('" + materia.id + "', '" + materia.materia + "', '" + materia.departamento + "')")
 
         try:
@@ -58,38 +57,68 @@ class GestionarMaterias:
         conexion_bd.cerrar()
         return materia
 
-    def modificar_materia(self, materia: Materia) -> None:
-        nuevo_nombre: str = ""
-        nuevo_departamento: str = ""
-
-        nombre_final: str = materia.materia
-        departamento_final: str = materia.departamento
-
-        nuevo_nombre = input(
-            "Introduce el nuevo nombre de la materia / Dejar vacío si no se quiere modificar: ").strip()
-        if nuevo_nombre != "":
-            nombre_final = nuevo_nombre
-
-        nuevo_departamento = input("Introduce el nuevo departamento / Dejar vacío si no se quiere modificar: ").strip()
-        if nuevo_departamento != "":
-            departamento_final = nuevo_departamento
-
-        try:
-            materia_temporal = Materia(materia.id, nombre_final, departamento_final)
-        except ValueError as error:
-            print("Error al modificar la materia:", error)
-            return
-
+    def buscar_materia_por_id(self, id_materia):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM materias WHERE id = '" + id_materia + "'"
+        resultado = conexion_bd.obtener_datos(consulta)
+        if resultado:
+            fila = resultado[0]
+            print("ID:", fila[0], "Nombre:", fila[1], "Departamento:", fila[2])
+        else:
+            print("Materia no encontrada")
+        conexion_bd.cerrar()
 
-        update_materia = ("UPDATE materias SET materia = '" + nombre_final + "', departamento = '" + departamento_final +
-                "' WHERE id = " + str(materia.id))
+    def buscar_materias_por_departamento(self, departamento):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM materias WHERE departamento LIKE '%" + departamento + "%'"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("ID:", fila[0], "Nombre:", fila[1], "Departamento:", fila[2])
+        else:
+            print("No se encontraron materias")
+        conexion_bd.cerrar()
 
-        try:
-            conexion_bd.ejecutar_consulta(update_materia)
-            print("La materia se ha modificado correctamente.")
-        except ValueError as error:
-            print("Error al modificar la materia en la base de datos. Error: ", error)
-        finally:
-            conexion_bd.cerrar()
+    def listar_todos(self):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM materias"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("ID:", fila[0], "Nombre:", fila[1], "Departamento:", fila[2])
+        else:
+            print("No hay materias registradas")
+        conexion_bd.cerrar()
+
+    def modificar_materia(self, nombre):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM materias WHERE nombre = '" + nombre + "'"
+        resultado = conexion_bd.obtener_datos(consulta)
+        if resultado:
+            fila = resultado[0]
+            print("ID:", fila[0], "Nombre:", fila[1], "Departamento:", fila[2])
+            nombre_final = fila[1]
+            departamento_final = fila[2]
+
+            nuevo_nombre = input("Nuevo nombre / Dejar vacío si no se modifica: ").strip()
+            if nuevo_nombre != "":
+                nombre_final = nuevo_nombre
+
+            nuevo_departamento = input("Nuevo departamento / Dejar vacío si no se modifica: ").strip()
+            if nuevo_departamento != "":
+                departamento_final = nuevo_departamento
+
+            consulta_update = "UPDATE materias SET nombre = '" + nombre_final + "', departamento = '" + departamento_final + "' WHERE nombre = '" + nombre + "'"
+
+            try:
+                conexion_bd.ejecutar_consulta(consulta_update)
+                print("La materia se ha modificado correctamente.")
+            except:
+                print("Error al modificar la materia en la base de datos.")
+        else:
+            print("Materia no encontrada")
+        conexion_bd.cerrar()

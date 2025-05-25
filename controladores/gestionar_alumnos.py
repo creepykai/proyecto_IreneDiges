@@ -67,50 +67,96 @@ class GestionarAlumnos:
 
         return alumno
 
-    def modificar_alumno(self, alumno: Alumno) -> None:
-        nuevo_nombre: str = ""
-        nuevo_apellido: str = ""
-        nuevo_tramo: str = ""
-        nuevo_str_bilingue: str = ""
-        nombre_final: str = alumno.nombre
-        apellidos_final: str = alumno.apellidos
-        tramo_final: str = alumno.tramo
-        bilingue_final: bool = alumno.bilingue
-
-        nuevo_nombre = input("Introduce el nuevo nombre / Dejar vacío si no se quiere modificar: ").strip()
-        if nuevo_nombre != "":
-            nombre_final = nuevo_nombre
-
-        nuevo_apellido = input("Introduce el nuevo apellido / Dejar vacío si no se quiere modificar: ").strip()
-        if nuevo_apellido != "":
-            apellido_final = nuevo_apellido
-
-        nuevo_tramo = input(
-            "Introduce el nuevo tramo (0, I, II) / Dejar vacío si no se quiere modificar: ").strip().upper()
-        if nuevo_tramo in ["0", "I", "II"]:
-            tramo_final = nuevo_tramo
-
-        nuevo_bilingue_str = input("¿Es bilingüe? (s/n) / Dejar vacío si no se quiere modificar: ").strip().lower()
-        if nuevo_bilingue_str in ["s", "n"]:
-            bilingue_final = True if nuevo_bilingue_str == "s" else False
-            bilingue_int = 1 if bilingue_final else 0
-
-        try:
-            alumno_temp = Alumno(alumno.nie, nombre_final, apellido_final, tramo_final, bilingue_final)
-        except ValueError as error:
-            print("Error al modificar el alumno:", eror)
-            return
-
+    def buscar_alumno_por_nie(self, nie):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM alumnos WHERE nie = '" + nie + "'"
+        resultado = conexion_bd.obtener_datos(consulta)
+        if resultado:
+            fila = resultado[0]
+            print("NIE:", fila[0], "Nombre:", fila[1], "Apellidos:", fila[2], "Tramo:", fila[3], "Bilingüe:", fila[4])
+        else:
+            print("Alumno no encontrado")
+        conexion_bd.cerrar()
 
-        update_alumno = ("UPDATE alumnos SET nombre = '" + nombre_final + "', apellidos = '" + apellido_final +
-                "', tramo = '" + tramo_final + "', bilingue = " + str(bilingue_int) + " WHERE nie = '" + alumno.nie + "'")
+    def buscar_alumnos_por_nombre(self, nombre):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM alumnos WHERE nombre LIKE '%" + nombre + "%'"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("NIE:", fila[0], "Nombre:", fila[1], "Apellidos:", fila[2], "Tramo:", fila[3], "Bilingüe:",
+                      fila[4])
+        else:
+            print("No se encontraron alumnos")
+        conexion_bd.cerrar()
 
-        try:
-            conexion_bd.ejecutar_consulta(update_alumno)
-            print("El alumno se ha modificado correctamente.")
-        except:
-            print("Error al modificar el alumno en la base de datos.")
-        finally:
-            conexion_bd.cerrar()
+    def buscar_alumnos_por_tramo(self, tramo):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM alumnos WHERE tramo = '" + tramo + "'"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("NIE:", fila[0], "Nombre:", fila[1], "Apellidos:", fila[2], "Tramo:", fila[3], "Bilingüe:",
+                      fila[4])
+        else:
+            print("No se encontraron alumnos")
+        conexion_bd.cerrar()
+
+    def listar_todos(self):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM alumnos"
+        resultados = conexion_bd.obtener_datos(consulta)
+        if resultados:
+            for fila in resultados:
+                print("NIE:", fila[0], "Nombre:", fila[1], "Apellidos:", fila[2], "Tramo:", fila[3], "Bilingüe:",
+                      fila[4])
+        else:
+            print("No hay alumnos registrados")
+        conexion_bd.cerrar()
+
+    def modificar_alumno(self, nie):
+        conexion_bd = ConexionBD()
+        conexion_bd.conectar_base_de_datos()
+        consulta = "SELECT * FROM alumnos WHERE nie = '" + nie + "'"
+        resultado = conexion_bd.obtener_datos(consulta)
+        if resultado:
+            fila = resultado[0]
+            print("NIE:", fila[0], "Nombre:", fila[1], "Apellidos:", fila[2], "Tramo:", fila[3], "Bilingüe:", fila[4])
+            nombre_final = fila[1]
+            apellidos_final = fila[2]
+            tramo_final = fila[3]
+            bilingue_final = bool(fila[4])
+
+            nuevo_nombre = input("Nuevo nombre / Dejar vacío si no se modifica: ").strip()
+            if nuevo_nombre != "":
+                nombre_final = nuevo_nombre
+
+            nuevo_apellido = input("Nuevo apellido / Dejar vacío si no se modifica: ").strip()
+            if nuevo_apellido != "":
+                apellidos_final = nuevo_apellido
+
+            nuevo_tramo = input("Nuevo tramo (0, I, II) / Dejar vacío si no se modifica: ").strip().upper()
+            if nuevo_tramo in ["0", "I", "II"]:
+                tramo_final = nuevo_tramo
+
+            nuevo_bilingue_str = input("¿Es bilingüe? (s/n) / Dejar vacío si no se modifica: ").strip().lower()
+            if nuevo_bilingue_str in ["s", "n"]:
+                bilingue_final = True if nuevo_bilingue_str == "s" else False
+
+            bilingue_int = 1 if bilingue_final else 0
+
+            consulta_update = "UPDATE alumnos SET nombre = '" + nombre_final + "', apellidos = '" + apellidos_final + "', tramo = '" + tramo_final + "', bilingue = " + str(
+                bilingue_int) + " WHERE nie = '" + nie + "'"
+
+            try:
+                conexion_bd.ejecutar_consulta(consulta_update)
+                print("El alumno se ha modificado correctamente.")
+            except:
+                print("Error al modificar el alumno en la base de datos.")
+        else:
+            print("Alumno no encontrado")
+        conexion_bd.cerrar()
