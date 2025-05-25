@@ -1,63 +1,65 @@
 import unittest
-from clases.prestamo import Prestamo
 from clases.alumno import Alumno
 from clases.libro import Libro
 from clases.curso import Curso
+from clases.prestamo import Prestamo
 
 class TestPrestamo(unittest.TestCase):
     def setUp(self):
-        self.alumno = Alumno("03226649W", "Irene", "Diges", "I", False)
-        self.libro = Libro("9783161484100", "Física y Química", "Autor X", 5, "Editorial A", "Física", "1ºESO")
-        self.curso = Curso("1ºESO", "ESO")
+        self.alumno = Alumno("12345678A", "Juan", "Pérez", "I", True)
+        self.libro = Libro("9783161484100", "Física y Química", "Autor X", 5, "1", "1ESO")
+        self.curso = Curso("1ESO", "ESO")
 
     def test_crear_prestamo_valido(self):
-        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "P", None)
-        self.assertIsInstance(prestamo, Prestamo)
+        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "P", "")
+        self.assertEqual(prestamo.alumno.nie, "12345678A")
+        self.assertEqual(prestamo.libro.titulo, "Física y Química")
+        self.assertEqual(prestamo.curso.curso, "1ESO")
+        self.assertEqual(prestamo.estado, "P")
 
-    def test_crear_prestamo_estado_invalido(self):
-        with self.assertRaises(ValueError):
-            Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "X", None)
-
-    def test_crear_prestamo_sin_fecha_devolucion(self):
-        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "P", None)
-        self.assertIsNone(prestamo.fecha_devolucion)
-
-    def test_fecha_entrega_vacia(self):
-        with self.assertRaises(ValueError):
-            Prestamo(self.alumno, self.libro, self.curso, "", "P", None)
-
-    def test_fecha_entrega_mal_formateada(self):
-        with self.assertRaises(ValueError):
-            Prestamo(self.alumno, self.libro, self.curso, "01-06-2024", "P", None)
-
-    def test_fecha_devolucion_mal_formateada(self):
-        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "P", None)
-        with self.assertRaises(ValueError):
-            prestamo.modificar_datos(self.curso, "15-06-2024", "D")
-
-    def test_str_prestamo(self):
-        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "P", None)
-        esperado = ("Alumno: Irene Diges "
-                    "Libro: Física y Química "
-                    "Curso: 1ºESO, Nivel: ESO "
-                    "Fecha entrega: 2024-06-01 "
-                    "Fecha devolución: None "
-                    "Estado: Prestado")
-        self.assertEqual(str(prestamo), esperado)
-
-    def test_modificar_datos_prestamo(self):
-        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "P", None)
-        nuevo_curso = Curso("2ºESO", "ESO")
-        prestamo.modificar_datos(nuevo_curso, "2024-06-15", "D")
-        self.assertEqual(prestamo.curso.curso, "2ºESO")
-        self.assertEqual(prestamo.fecha_devolucion, "2024-06-15")
+    def test_modificar_prestamo_completo(self):
+        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "P", "")
+        prestamo.modificar_datos(curso=Curso("2ESO", "ESO"), fecha_devolucion="2025-06-15", estado="D")
+        self.assertEqual(prestamo.curso.curso, "2ESO")
+        self.assertEqual(prestamo.fecha_devolucion, "2025-06-15")
         self.assertEqual(prestamo.estado, "D")
 
-    def test_modificar_estado_invalido(self):
-        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2024-06-01", "P", None)
-        nuevo_curso = Curso("2ºESO", "ESO")
+    def test_modificar_prestamo_parcial(self):
+        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "P", "")
+        prestamo.modificar_datos(estado="D")
+        self.assertEqual(prestamo.estado, "D")
+        self.assertEqual(prestamo.fecha_devolucion, "")
+
+    def test_fecha_devolucion_none(self):
+        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "P", None)
+        self.assertIsNone(prestamo.fecha_devolucion)
+
+    def test_str_representacion(self):
+        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "D", "2025-06-15")
+        esperado = (
+            "Alumno: Juan Pérez Libro: Física y Química Curso: 1ESO, Nivel: ESO "
+            "Fecha entrega: 2025-06-01 Fecha devolución: 2025-06-15 Estado: Devuelto"
+        )
+        self.assertEqual(str(prestamo), esperado)
+
+    def test_validar_fecha_correcta(self):
+        self.assertTrue(Prestamo.validar_fecha("2025-06-01", "fecha de prueba"))
+
+    def test_validar_fecha_incorrecta(self):
+        self.assertFalse(Prestamo.validar_fecha("01-06-2025", "fecha de prueba"))
+
+    def test_validar_datos_prestamo_correcto(self):
+        prestamo = Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "P", "")
+        self.assertTrue(prestamo.validar_datos_prestamo())
+
+    def test_validar_datos_prestamo_incorrecto_fecha(self):
+        # Aquí verificamos que lanzar el constructor con fecha mal formada levanta error
         with self.assertRaises(ValueError):
-            prestamo.modificar_datos(nuevo_curso, "2024-06-15", "X")
+            Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "P", "fecha_mal")
+
+    def test_estado_invalido_lanza_error(self):
+        with self.assertRaises(ValueError):
+            Prestamo(self.alumno, self.libro, self.curso, "2025-06-01", "X", "")
 
 if __name__ == "__main__":
     unittest.main()

@@ -43,7 +43,7 @@ class GestionarLibro:
             print("La materia no puede estar vacía.")
 
         while True:
-            curso = input("Introduce el curso (id): ").strip()
+            curso = input("Introduce el curso (id) (1ESO, 2ESO -> sin º): ").strip()
             if curso != "":
                 break
             print("El curso no puede estar vacío.")

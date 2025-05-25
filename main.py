@@ -11,6 +11,20 @@ from datos_csv.cargar_datos import (
     cargar_prestamos_desde_csv
 )
 
+def login_simple():
+    intentos = 3
+    while intentos > 0:
+        usuario = input("Usuario: ").strip()
+        contrasena = input("Contraseña: ").strip()
+        if usuario == "admin" and contrasena == "admin":
+            print("Login exitoso. Bienvenido, admin.")
+            return True
+        else:
+            intentos -= 1
+            print("Usuario o contraseña incorrectos. Intentos restantes:", intentos)
+    print("Has excedido el número de intentos. Saliendo del programa.")
+    return False
+
 class App:
     def mostrar_menu_principal(self):
         print("MENÚ PRINCIPAL")
@@ -207,15 +221,15 @@ class App:
                     break
                 case "7":
                     alumnos = cargar_alumnos_desde_csv('datos_csv/alumnos.csv')
-                    libros = cargar_libros_desde_csv('datos_csv/libros.csv')
-                    cursos = cargar_cursos_desde_csv('datos_csv/cursos.csv')
                     materias = cargar_materias_desde_csv('datos_csv/materias.csv')
-                    prestamos = cargar_prestamos_desde_csv('datos_csv/prestamos.csv', alumnos, libros, cursos)
+                    cursos = cargar_cursos_desde_csv('datos_csv/cursos.csv')
+                    libros = cargar_libros_desde_csv('datos_csv/libros.csv')
+                    prestamos = cargar_prestamos_desde_csv('datos_csv/prestamos.csv')
                     print("Datos cargados correctamente desde los CSV.")
-
                 case _:
                     print("Opción inválida")
 
 if __name__ == "__main__":
-    app = App()
-    app.main()
+    if login_simple():
+        app = App()
+        app.main()

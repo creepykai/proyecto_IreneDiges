@@ -12,7 +12,6 @@ class GestionarPrestamo:
     def crear_prestamo(self) -> Prestamo:
         nie: str = ""
         isbn: str = ""
-        titulo: str = ""
         curso_nombre: str = ""
         fecha_entrega: str = ""
         estado: str = ""
@@ -51,7 +50,7 @@ class GestionarPrestamo:
 
         while True:
             curso_nombre = input("Introduce el curso del alumno: ").strip()
-            consulta = "SELECT * FROM cursos WHERE nombre = '" + curso_nombre + "'"
+            consulta = "SELECT * FROM cursos WHERE curso = '" + curso_nombre + "'"
             datos_curso = conexion_bd.obtener_datos(consulta)
             if datos_curso:
                 datos = datos_curso[0]
@@ -97,12 +96,11 @@ class GestionarPrestamo:
     def buscar_prestamo_por_nie_isbn(self, nie, isbn):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM prestamos WHERE nie_alumno = '" + nie + "' AND isbn_libro = '" + isbn + "'"
+        consulta = "SELECT * FROM alumnoscursoslibros WHERE nie = '" + nie + "' AND isbn = '" + isbn + "'"
         resultado = conexion_bd.obtener_datos(consulta)
         if resultado:
             fila = resultado[0]
-            print("NIE:", fila[0], "ISBN:", fila[1], "Curso:", fila[2], "Fecha entrega:", fila[3], "Estado:", fila[4],
-                  "Fecha devolución:", fila[5])
+            print("NIE:", fila[0], "ISBN:", fila[2], "Curso:", fila[1], "Fecha entrega:", fila[3], "Estado:", fila[5], "Fecha devolución:", fila[4])
         else:
             print("Préstamo no encontrado")
         conexion_bd.cerrar()
@@ -110,12 +108,11 @@ class GestionarPrestamo:
     def buscar_prestamos_por_estado(self, estado):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM prestamos WHERE estado = '" + estado + "'"
+        consulta = "SELECT * FROM alumnoscursoslibros WHERE estado = '" + estado + "'"
         resultados = conexion_bd.obtener_datos(consulta)
         if resultados:
             for fila in resultados:
-                print("NIE:", fila[0], "ISBN:", fila[1], "Curso:", fila[2], "Fecha entrega:", fila[3], "Estado:",
-                      fila[4], "Fecha devolución:", fila[5])
+                print("NIE:", fila[0], "ISBN:", fila[2], "Curso:", fila[1], "Fecha entrega:", fila[3], "Estado:", fila[5], "Fecha devolución:", fila[4])
         else:
             print("No se encontraron préstamos")
         conexion_bd.cerrar()
@@ -123,12 +120,11 @@ class GestionarPrestamo:
     def listar_todos(self):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM prestamos"
+        consulta = "SELECT * FROM alumnoscursoslibros"
         resultados = conexion_bd.obtener_datos(consulta)
         if resultados:
             for fila in resultados:
-                print("NIE:", fila[0], "ISBN:", fila[1], "Curso:", fila[2], "Fecha entrega:", fila[3], "Estado:",
-                      fila[4], "Fecha devolución:", fila[5])
+                print("NIE:", fila[0], "ISBN:", fila[2], "Curso:", fila[1], "Fecha entrega:", fila[3], "Estado:", fila[5], "Fecha devolución:", fila[4])
         else:
             print("No hay préstamos registrados")
         conexion_bd.cerrar()
@@ -136,16 +132,15 @@ class GestionarPrestamo:
     def modificar_prestamo(self, nie, isbn) -> None:
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM prestamos WHERE nie_alumno = '" + nie + "' AND isbn_libro = '" + isbn + "'"
+        consulta = "SELECT * FROM alumnoscursoslibros WHERE nie = '" + nie + "' AND isbn = '" + isbn + "'"
         resultado = conexion_bd.obtener_datos(consulta)
         if resultado:
             fila = resultado[0]
-            print("NIE:", fila[0], "ISBN:", fila[1], "Curso:", fila[2], "Fecha entrega:", fila[3], "Estado:", fila[4],
-                  "Fecha devolución:", fila[5])
-            curso_final = fila[2]
+            print("NIE:", fila[0], "ISBN:", fila[2], "Curso:", fila[1], "Fecha entrega:", fila[3], "Estado:", fila[5], "Fecha devolución:", fila[4])
+            curso_final = fila[1]
             fecha_entrega_final = fila[3]
-            estado_final = fila[4]
-            fecha_devolucion_final = fila[5]
+            estado_final = fila[5]
+            fecha_devolucion_final = fila[4]
 
             nuevo_curso = input("Nuevo curso / Dejar vacío si no se modifica: ").strip()
             if nuevo_curso != "":
@@ -159,12 +154,11 @@ class GestionarPrestamo:
             if nuevo_estado in ["P", "D"]:
                 estado_final = nuevo_estado
 
-            nuevo_fecha_devolucion = input(
-                "Nueva fecha de devolución (YYYY-MM-DD) / Dejar vacío si no se modifica: ").strip()
+            nuevo_fecha_devolucion = input("Nueva fecha de devolución (YYYY-MM-DD) / Dejar vacío si no se modifica: ").strip()
             if nuevo_fecha_devolucion != "":
                 fecha_devolucion_final = nuevo_fecha_devolucion
 
-            consulta_update = "UPDATE prestamos SET curso = '" + curso_final + "', fecha_entrega = '" + fecha_entrega_final + "', estado = '" + estado_final + "', fecha_devolucion = '" + fecha_devolucion_final + "' WHERE nie_alumno = '" + nie + "' AND isbn_libro = '" + isbn + "'"
+            consulta_update = ("UPDATE alumnoscursoslibros SET curso = '" + curso_final + "', fecha_entrega = '" + fecha_entrega_final + "', estado = '" + estado_final + "', fecha_devolucion = '" + fecha_devolucion_final + "' WHERE nie = '" + nie + "' AND isbn = '" + isbn + "'")
 
             try:
                 conexion_bd.ejecutar_consulta(consulta_update)
@@ -178,20 +172,20 @@ class GestionarPrestamo:
     def generar_contrato_prestamo(self, nie, isbn):
         conexion_bd = ConexionBD()
         conexion_bd.conectar_base_de_datos()
-        consulta = "SELECT * FROM prestamos WHERE nie_alumno = '" + nie + "' AND isbn_libro = '" + isbn + "'"
+        consulta = "SELECT * FROM alumnoscursoslibros WHERE nie = '" + nie + "' AND isbn = '" + isbn + "'"
         resultado = conexion_bd.obtener_datos(consulta)
         if resultado:
             fila = resultado[0]
             nombre_archivo = "contrato_" + nie + "_" + isbn + ".txt"
-            with open(nombre_archivo, "w") as archivo:
+            with open(nombre_archivo, "w", encoding='utf-8') as archivo:
                 archivo.write("CONTRATO DE PRÉSTAMO\n")
                 archivo.write("---------------------\n")
                 archivo.write("NIE del alumno: " + fila[0] + "\n")
-                archivo.write("ISBN del libro: " + fila[1] + "\n")
-                archivo.write("Curso: " + fila[2] + "\n")
+                archivo.write("ISBN del libro: " + fila[2] + "\n")
+                archivo.write("Curso: " + fila[1] + "\n")
                 archivo.write("Fecha de entrega: " + str(fila[3]) + "\n")
-                archivo.write("Estado: " + fila[4] + "\n")
-                archivo.write("Fecha de devolución: " + str(fila[5]) + "\n")
+                archivo.write("Estado: " + fila[5] + "\n")
+                archivo.write("Fecha de devolución: " + str(fila[4]) + "\n")
                 archivo.write("\nFirma: __________________\n")
             print("El contrato se ha generado correctamente en el archivo:", nombre_archivo)
         else:
